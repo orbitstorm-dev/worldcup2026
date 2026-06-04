@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>WC 2026 — Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #161a20;
+    --surface2: #1e242c;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaed;
+    --muted: #6b7280;
+    --accent: #e8c84a;
+    --accent-dim: rgba(232,200,74,0.12);
+    --usa: #4ade80;
+    --usa-dim: rgba(74,222,128,0.10);
+    --usa-border: rgba(74,222,128,0.35);
+    --live: #f87171;
+    --live-dim: rgba(248,113,113,0.15);
+    --fin: #60a5fa;
+    --fox: #1d4ed8;
+    --fs1: #166534;
+    --r: 6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(13,15,18,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border2);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 20px; letter-spacing: .5px;
+    color: var(--text); text-decoration: none; white-space: nowrap;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-trophy { color: var(--accent); font-size: 18px; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  #sync-status {
+    font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .sync-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+    transition: background .3s;
+  }
+  .sync-dot.live { background: var(--live); box-shadow: 0 0 6px var(--live); animation: pulse 1.8s infinite; }
+  .sync-dot.ok   { background: var(--usa); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ── CONTROLS ── */
+  .controls {
+    padding: 10px 16px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 49px; z-index: 40;
+  }
+  .pill-group { display: flex; gap: 4px; flex-wrap: wrap; }
+  .pill {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: .3px;
+    padding: 5px 11px; border-radius: 99px;
+    border: 1px solid var(--border2);
+    background: transparent; color: var(--muted);
+    cursor: pointer; transition: all .15s;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--text); }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #000; }
+  .pill.usa-pill.active { background: var(--usa); border-color: var(--usa); color: #000; }
+  .search-wrap { position: relative; flex: 1; min-width: 140px; max-width: 260px; }
+  .search-wrap input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: var(--r); padding: 6px 10px 6px 30px;
+    color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif;
+    outline: none; transition: border-color .15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 13px; pointer-events: none;
+  }
+  .count-badge {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif; letter-spacing: .3px;
+    white-space: nowrap;
+  }
+
+  /* ── MAIN ── */
+  main { padding: 0 16px 80px; max-width: 680px; margin: 0 auto; }
+
+  /* ── PHASE HEADER ── */
+  .phase-block { padding-top: 22px; }
+  .phase-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent);
+    padding-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .phase-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border2);
+  }
+
+  /* ── DAY BLOCK ── */
+  .day-block { margin-bottom: 2px; }
+  .day-header {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: .3px;
+    color: var(--muted); padding: 10px 0 5px;
+    text-transform: uppercase;
+  }
+
+  /* ── MATCH ROW ── */
+  .match {
+    display: grid;
+    grid-template-columns: 68px 1fr auto;
+    gap: 0 10px;
+    align-items: center;
+    padding: 9px 10px;
+    border-radius: var(--r);
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    transition: background .15s, border-color .15s;
+  }
+  .match:hover { background: var(--surface2); }
+  .match.usa {
+    background: var(--usa-dim);
+    border-color: var(--usa-border);
+  }
+  .match.usa:hover { background: rgba(74,222,128,0.16); }
+  .match.live-now {
+    background: var(--live-dim);
+    border-color: rgba(248,113,113,0.4);
+    animation: live-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes live-pulse {
+    0%,100% { border-color: rgba(248,113,113,0.4); }
+    50% { border-color: rgba(248,113,113,0.9); }
+  }
+  .match.finished { opacity: 0.72; }
+
+  /* Time column */
+  .m-time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 600; color: var(--text);
+    line-height: 1.2;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .m-time .tz { font-size: 10px; font-weight: 400; color: var(--muted); letter-spacing: .3px; }
+  .m-badge {
+    display: inline-block;
+    font-size: 9px; font-weight: 700; letter-spacing: .8px;
+    padding: 1px 5px; border-radius: 3px; text-transform: uppercase;
+  }
+  .m-badge.live-badge { background: var(--live); color: #fff; }
+  .m-badge.fin-badge  { background: var(--surface2); color: var(--fin); border: 1px solid rgba(96,165,250,.3); }
+  .m-badge.usa-badge  { background: var(--usa); color: #000; }
+  .m-badge.tbd-badge  { background: var(--surface2); color: var(--muted); }
+
+  /* Teams column */
+  .m-teams { min-width: 0; }
+  .m-matchup {
+    display: flex; align-items: center; gap: 4px;
+    flex-wrap: wrap; line-height: 1.4;
+  }
+  .m-team {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 14px; font-weight: 500; color: var(--text);
+    white-space: nowrap;
+  }
+  .m-team.winner { color: #fff; font-weight: 600; }
+  .m-flag { font-size: 16px; line-height: 1; }
+  .m-vs { font-size: 11px; color: var(--muted); margin: 0 1px; }
+  .m-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700; color: var(--accent);
+    margin: 0 3px; letter-spacing: .5px;
+  }
+  .m-meta {
+    margin-top: 2px;
+    font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .m-group { color: var(--muted); }
+
+  /* Right column */
+  .m-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .m-venue { font-size: 10px; color: var(--muted); text-align: right; line-height: 1.3; }
+  .m-ch {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: .5px;
+    padding: 2px 7px; border-radius: 3px;
+  }
+  .ch-FOX  { background: var(--fox); color: #fff; }
+  .ch-FS1  { background: var(--fs1); color: #fff; }
+
+  /* ── EMPTY ── */
+  .empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted); font-size: 14px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 16px;
+    font-size: 11px; color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── LOADING SKELETON ── */
+  .skeleton-wrap { padding: 16px 0; }
+  .skel {
+    height: 56px; background: var(--surface2); border-radius: var(--r);
+    margin-bottom: 4px;
+    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 420px) {
+    .m-venue { display: none; }
+    .match { grid-template-columns: 60px 1fr auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <span class="logo-trophy">⚽</span>
+    WC 2026
+  </a>
+  <div class="header-right">
+    <div id="sync-status">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label">Loading…</span>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="pill-group" id="phase-pills">
+    <button class="pill active" data-phase="all">All</button>
+    <button class="pill" data-phase="group">Groups</button>
+    <button class="pill" data-phase="r32">R32</button>
+    <button class="pill" data-phase="r16">R16</button>
+    <button class="pill" data-phase="qf">QF</button>
+    <button class="pill" data-phase="sf">SF</button>
+    <button class="pill" data-phase="final">Final</button>
+    <button class="pill usa-pill" data-phase="usa">🇺🇸 USA</button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="search" id="search" placeholder="Team or city…" autocomplete="off" autocorrect="off">
+  </div>
+  <div class="count-badge" id="count-badge"></div>
+</div>
+
+<main id="main">
+  <div class="skeleton-wrap">
+    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    <div class="skel"></div><div class="skel"></div>
+  </div>
+</main>
+
+<footer>
+  Data: openfootball/worldcup.json — Times in Pacific (PDT) — Not affiliated with FIFA
+</footer>
+
+<script>
+// ─────────────────────────────────────────────
+// FLAGS
+// ─────────────────────────────────────────────
+const FLAGS = {
+  'Mexico':'🇲🇽','South Africa':'🇿🇦','South Korea':'🇰🇷','Korea Republic':'🇰🇷',
+  'Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦',
+  'Bosnia and Herzegovina':'🇧🇦','Bosnia & Herzegovina':'🇧🇦','Bosnia':'🇧🇦',
+  'USA':'🇺🇸','United States':'🇺🇸','Paraguay':'🇵🇾','Qatar':'🇶🇦',
+  'Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹',
+  'Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','Australia':'🇦🇺','Turkey':'🇹🇷','Türkiye':'🇹🇷',
+  'Germany':'🇩🇪','Curacao':'🇨🇼','Curaçao':'🇨🇼','Netherlands':'🇳🇱',
+  'Japan':'🇯🇵','Ivory Coast':'🇨🇮',"Côte d'Ivoire":'🇨🇮','Ecuador':'🇪🇨',
+  'Tunisia':'🇹🇳','Sweden':'🇸🇪','Spain':'🇪🇸','Cape Verde':'🇨🇻',
+  'Belgium':'🇧🇪','Egypt':'🇪🇬','Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾',
+  'Iran':'🇮🇷','New Zealand':'🇳🇿','France':'🇫🇷','Senegal':'🇸🇳',
+  'Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿',
+  'Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','Congo DR':'🇨🇩',
+  'DR Congo':'🇨🇩','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭',
+  'Panama':'🇵🇦','Uzbekistan':'🇺🇿','Colombia':'🇨🇴'
+};
+
+function flag(name) {
+  if (!name || name === 'TBD') return '';
+  if (FLAGS[name]) return FLAGS[name];
+  for (const k of Object.keys(FLAGS)) {
+    if (name.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(name.toLowerCase()))
+      return FLAGS[k];
+  }
+  return '';
+}
+
+// ─────────────────────────────────────────────
+// CANONICAL FIXTURE LIST (all 104 matches)
+// Keys that openfootball uses to match results
+// ─────────────────────────────────────────────
+const FIXTURES = [
+  // GROUP STAGE
+  {id:'g_a1', phase:'group', group:'A', date:'2026-06-11', pdt:'12:00 pm', t1:'Mexico',             t2:'South Africa',         venue:'Mexico City',       ch:'FOX'},
+  {id:'g_a2', phase:'group', group:'A', date:'2026-06-11', pdt:'7:00 pm',  t1:'South Korea',         t2:'Czechia',              venue:'Guadalajara',        ch:'FS1'},
+  {id:'g_b1', phase:'group', group:'B', date:'2026-06-12', pdt:'12:00 pm', t1:'Canada',              t2:'Bosnia and Herzegovina',venue:'Toronto',           ch:'FOX'},
+  {id:'g_d1', phase:'group', group:'D', date:'2026-06-12', pdt:'6:00 pm',  t1:'USA',                 t2:'Paraguay',             venue:'Los Angeles',        ch:'FOX', usa:true},
+  {id:'g_b2', phase:'group', group:'B', date:'2026-06-13', pdt:'12:00 pm', t1:'Qatar',               t2:'Switzerland',          venue:'San Francisco Bay',  ch:'FOX'},
+  {id:'g_c1', phase:'group', group:'C', date:'2026-06-13', pdt:'3:00 pm',  t1:'Brazil',              t2:'Morocco',              venue:'New York/NJ',        ch:'FS1'},
+  {id:'g_c2', phase:'group', group:'C', date:'2026-06-13', pdt:'6:00 pm',  t1:'Haiti',               t2:'Scotland',             venue:'Boston',             ch:'FS1'},
+  {id:'g_d2', phase:'group', group:'D', date:'2026-06-13', pdt:'9:00 pm',  t1:'Australia',           t2:'Türkiye',              venue:'Vancouver',          ch:'FOX'},
+  {id:'g_e1', phase:'group', group:'E', date:'2026-06-14', pdt:'10:00 am', t1:'Germany',             t2:'Curaçao',              venue:'Houston',            ch:'FOX'},
+  {id:'g_f1', phase:'group', group:'F', date:'2026-06-14', pdt:'1:00 pm',  t1:'Netherlands',         t2:'Japan',                venue:'Dallas',             ch:'FOX'},
+  {id:'g_e2', phase:'group', group:'E', date:'2026-06-14', pdt:'4:00 pm',  t1:'Ivory Coast',         t2:'Ecuador',              venue:'Philadelphia',       ch:'FS1'},
+  {id:'g_f2', phase:'group', group:'F', date:'2026-06-14', pdt:'7:00 pm',  t1:'Tunisia',             t2:'Sweden',               venue:'Monterrey',          ch:'FS1'},
+  {id:'g_h1', phase:'group', group:'H', date:'2026-06-15', pdt:'9:00 am',  t1:'Spain',               t2:'Cape Verde',           venue:'Atlanta',            ch:'FOX'},
+  {id:'g_g1', phase:'group', group:'G', date:'2026-06-15', pdt:'12:00 pm', t1:'Belgium',             t2:'Egypt',                venue:'Seattle ⭐',         ch:'FOX'},
+  {id:'g_h2', phase:'group', group:'H', date:'2026-06-15', pdt:'3:00 pm',  t1:'Saudi Arabia',        t2:'Uruguay',              venue:'Miami',              ch:'FS1'},
+  {id:'g_g2', phase:'group', group:'G', date:'2026-06-15', pdt:'6:00 pm',  t1:'Iran',                t2:'New Zealand',          venue:'Los Angeles',        ch:'FS1'},
+  {id:'g_i1', phase:'group', group:'I', date:'2026-06-16', pdt:'12:00 pm', t1:'France',              t2:'Senegal',              venue:'New York/NJ',        ch:'FOX'},
+  {id:'g_i2', phase:'group', group:'I', date:'2026-06-16', pdt:'3:00 pm',  t1:'Iraq',                t2:'Norway',               venue:'Boston',             ch:'FOX'},
+  {id:'g_j1', phase:'group', group:'J', date:'2026-06-16', pdt:'6:00 pm',  t1:'Argentina',           t2:'Algeria',              venue:'Kansas City',        ch:'FOX'},
+  {id:'g_j2', phase:'group', group:'J', date:'2026-06-16', pdt:'9:00 pm',  t1:'Austria',             t2:'Jordan',               venue:'San Francisco Bay',  ch:'FS1'},
+  {id:'g_k1', phase:'group', group:'K', date:'2026-06-17', pdt:'10:00 am', t1:'Portugal',            t2:'Congo DR',             venue:'Houston',            ch:'FOX'},
+  {id:'g_l1', phase:'group', group:'L', date:'2026-06-17', pdt:'1:00 pm',  t1:'England',             t2:'Croatia',              venue:'Dallas',             ch:'FOX'},
+  {id:'g_l2', phase:'group', group:'L', date:'2026-06-17', pdt:'4:00 pm',  t1:'Ghana',               t2:'Panama',               venue:'Toronto',            ch:'FS1'},
+  {id:'g_k2', phase:'group', group:'K', date:'2026-06-17', pdt:'7:00 pm',  t1:'Uzbekistan',          t2:'Colombia',             venue:'Mexico City',        ch:'FS1'},
+  {id:'g_a3', phase:'group', group:'A', date:'2026-06-18', pdt:'9:00 am',  t1:'Czechia',             t2:'South Africa',         venue:'Atlanta',            ch:'FOX'},
+  {id:'g_b3', phase:'group', group:'B', date:'2026-06-18', pdt:'12:00 pm', t1:'Switzerland',         t2:'Bosnia and Herzegovina',venue:'Los Angeles',       ch:'FOX'},
+  {id:'g_b4', phase:'group', group:'B', date:'2026-06-18', pdt:'3:00 pm',  t1:'Canada',              t2:'Qatar',                venue:'Vancouver',          ch:'FS1'},
+  {id:'g_a4', phase:'group', group:'A', date:'2026-06-18', pdt:'6:00 pm',  t1:'Mexico',              t2:'South Korea',          venue:'Guadalajara',        ch:'FOX'},
+  {id:'g_d3', phase:'group', group:'D', date:'2026-06-19', pdt:'12:00 pm', t1:'USA',                 t2:'Australia',            venue:'Seattle ⭐',         ch:'FOX', usa:true},
+  {id:'g_c3', phase:'group', group:'C', date:'2026-06-19', pdt:'12:00 pm', t1:'Scotland',            t2:'Morocco',              venue:'Boston',             ch:'FOX'},
+  {id:'g_c4', phase:'group', group:'C', date:'2026-06-19', pdt:'6:00 pm',  t1:'Brazil',              t2:'Haiti',                venue:'Philadelphia',       ch:'FOX'},
+  {id:'g_d4', phase:'group', group:'D', date:'2026-06-19', pdt:'9:00 pm',  t1:'Türkiye',             t2:'Paraguay',             venue:'San Francisco Bay',  ch:'FS1'},
+  {id:'g_f3', phase:'group', group:'F', date:'2026-06-20', pdt:'10:00 am', t1:'Netherlands',         t2:'Sweden',               venue:'Houston',            ch:'FOX'},
+  {id:'g_e3', phase:'group', group:'E', date:'2026-06-20', pdt:'1:00 pm',  t1:'Germany',             t2:'Ivory Coast',          venue:'Toronto',            ch:'FOX'},
+  {id:'g_e4', phase:'group', group:'E', date:'2026-06-20', pdt:'5:00 pm',  t1:'Ecuador',             t2:'Curaçao',              venue:'Kansas City',        ch:'FS1'},
+  {id:'g_f4', phase:'group', group:'F', date:'2026-06-20', pdt:'9:00 pm',  t1:'Tunisia',             t2:'Japan',                venue:'Monterrey',          ch:'FS1'},
+  {id:'g_h3', phase:'group', group:'H', date:'2026-06-21', pdt:'9:00 am',  t1:'Spain',               t2:'Saudi Arabia',         venue:'Atlanta',            ch:'FOX'},
+  {id:'g_g3', phase:'group', group:'G', date:'2026-06-21', pdt:'12:00 pm', t1:'Belgium',             t2:'Iran',                 venue:'Los Angeles',        ch:'FS1'},
+  {id:'g_h4', phase:'group', group:'H', date:'2026-06-21', pdt:'3:00 pm',  t1:'Uruguay',             t2:'Cape Verde',           venue:'Miami',              ch:'FS1'},
+  {id:'g_g4', phase:'group', group:'G', date:'2026-06-21', pdt:'6:00 pm',  t1:'New Zealand',         t2:'Egypt',                venue:'Vancouver',          ch:'FS1'},
+  {id:'g_j3', phase:'group', group:'J', date:'2026-06-22', pdt:'10:00 am', t1:'Argentina',           t2:'Austria',              venue:'Dallas',             ch:'FOX'},
+  {id:'g_i3', phase:'group', group:'I', date:'2026-06-22', pdt:'2:00 pm',  t1:'France',              t2:'Iraq',                 venue:'Philadelphia',       ch:'FOX'},
+  {id:'g_i4', phase:'group', group:'I', date:'2026-06-22', pdt:'5:00 pm',  t1:'Norway',              t2:'Senegal',              venue:'New York/NJ',        ch:'FOX'},
+  {id:'g_j4', phase:'group', group:'J', date:'2026-06-22', pdt:'8:00 pm',  t1:'Jordan',              t2:'Algeria',              venue:'San Francisco Bay',  ch:'FS1'},
+  {id:'g_k3', phase:'group', group:'K', date:'2026-06-23', pdt:'10:00 am', t1:'Portugal',            t2:'Uzbekistan',           venue:'Houston',            ch:'FOX'},
+  {id:'g_l3', phase:'group', group:'L', date:'2026-06-23', pdt:'1:00 pm',  t1:'England',             t2:'Ghana',                venue:'Boston',             ch:'FOX'},
+  {id:'g_l4', phase:'group', group:'L', date:'2026-06-23', pdt:'4:00 pm',  t1:'Panama',              t2:'Croatia',              venue:'Toronto',            ch:'FOX'},
+  {id:'g_k4', phase:'group', group:'K', date:'2026-06-23', pdt:'7:00 pm',  t1:'Colombia',            t2:'Congo DR',             venue:'Guadalajara',        ch:'FS1'},
+  {id:'g_b5', phase:'group', group:'B', date:'2026-06-24', pdt:'12:00 pm', t1:'Switzerland',         t2:'Canada',               venue:'Vancouver',          ch:'FOX'},
+  {id:'g_b6', phase:'group', group:'B', date:'2026-06-24', pdt:'12:00 pm', t1:'Bosnia and Herzegovina',t2:'Qatar',              venue:'Seattle ⭐',         ch:'FS1'},
+  {id:'g_c5', phase:'group', group:'C', date:'2026-06-24', pdt:'3:00 pm',  t1:'Brazil',              t2:'Scotland',             venue:'Miami',              ch:'FOX'},
+  {id:'g_c6', phase:'group', group:'C', date:'2026-06-24', pdt:'3:00 pm',  t1:'Morocco',             t2:'Haiti',                venue:'Atlanta',            ch:'FS1'},
+  {id:'g_a5', phase:'group', group:'A', date:'2026-06-24', pdt:'6:00 pm',  t1:'Mexico',              t2:'Czechia',              venue:'Mexico City',        ch:'FOX'},
+  {id:'g_a6', phase:'group', group:'A', date:'2026-06-24', pdt:'6:00 pm',  t1:'South Korea',         t2:'South Africa',         venue:'Monterrey',          ch:'FS1'},
+  {id:'g_e5', phase:'group', group:'E', date:'2026-06-25', pdt:'1:00 pm',  t1:'Ecuador',             t2:'Germany',              venue:'New York/NJ',        ch:'FOX'},
+  {id:'g_e6', phase:'group', group:'E', date:'2026-06-25', pdt:'1:00 pm',  t1:'Curaçao',             t2:'Ivory Coast',          venue:'Philadelphia',       ch:'FS1'},
+  {id:'g_f5', phase:'group', group:'F', date:'2026-06-25', pdt:'4:00 pm',  t1:'Tunisia',             t2:'Netherlands',          venue:'Kansas City',        ch:'FOX'},
+  {id:'g_f6', phase:'group', group:'F', date:'2026-06-25', pdt:'4:00 pm',  t1:'Japan',               t2:'Sweden',               venue:'Dallas',             ch:'FS1'},
+  {id:'g_d5', phase:'group', group:'D', date:'2026-06-25', pdt:'7:00 pm',  t1:'USA',                 t2:'Türkiye',              venue:'Los Angeles',        ch:'FOX', usa:true},
+  {id:'g_d6', phase:'group', group:'D', date:'2026-06-25', pdt:'7:00 pm',  t1:'Paraguay',            t2:'Australia',            venue:'San Francisco Bay',  ch:'FS1'},
+  {id:'g_i5', phase:'group', group:'I', date:'2026-06-26', pdt:'12:00 pm', t1:'Norway',              t2:'France',               venue:'Boston',             ch:'FOX'},
+  {id:'g_i6', phase:'group', group:'I', date:'2026-06-26', pdt:'12:00 pm', t1:'Senegal',             t2:'Iraq',                 venue:'Toronto',            ch:'FS1'},
+  {id:'g_h5', phase:'group', group:'H', date:'2026-06-26', pdt:'5:00 pm',  t1:'Uruguay',             t2:'Spain',                venue:'Guadalajara',        ch:'FOX'},
+  {id:'g_h6', phase:'group', group:'H', date:'2026-06-26', pdt:'5:00 pm',  t1:'Cape Verde',          t2:'Saudi Arabia',         venue:'Houston',            ch:'FS1'},
+  {id:'g_g5', phase:'group', group:'G', date:'2026-06-26', pdt:'8:00 pm',  t1:'New Zealand',         t2:'Belgium',              venue:'Vancouver',          ch:'FOX'},
+  {id:'g_g6', phase:'group', group:'G', date:'2026-06-26', pdt:'8:00 pm',  t1:'Egypt',               t2:'Iran',                 venue:'Seattle ⭐',         ch:'FS1'},
+  {id:'g_l5', phase:'group', group:'L', date:'2026-06-27', pdt:'2:00 pm',  t1:'Panama',              t2:'England',              venue:'New York/NJ',        ch:'FOX'},
+  {id:'g_l6', phase:'group', group:'L', date:'2026-06-27', pdt:'2:00 pm',  t1:'Croatia',             t2:'Ghana',                venue:'Philadelphia',       ch:'FS1'},
+  {id:'g_k5', phase:'group', group:'K', date:'2026-06-27', pdt:'5:00 pm',  t1:'Colombia',            t2:'Portugal',             venue:'Kansas City',        ch:'FOX'},
+  {id:'g_k6', phase:'group', group:'K', date:'2026-06-27', pdt:'7:30 pm',  t1:'Congo DR',            t2:'Uzbekistan',           venue:'Atlanta',            ch:'FS1'},
+  // ROUND OF 32
+  {id:'r32_1',  phase:'r32', date:'2026-06-28', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FOX'},
+  {id:'r32_2',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Guadalajara',      ch:'FS1'},
+  {id:'r32_3',  phase:'r32', date:'2026-06-28', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',       ch:'FOX'},
+  {id:'r32_4',  phase:'r32', date:'2026-06-28', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Los Angeles',      ch:'FS1'},
+  {id:'r32_5',  phase:'r32', date:'2026-06-29', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Boston',           ch:'FOX'},
+  {id:'r32_6',  phase:'r32', date:'2026-06-29', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Mexico City',      ch:'FS1'},
+  {id:'r32_7',  phase:'r32', date:'2026-06-29', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FOX'},
+  {id:'r32_8',  phase:'r32', date:'2026-06-29', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',            ch:'FS1'},
+  {id:'r32_9',  phase:'r32', date:'2026-06-30', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Houston',          ch:'FOX'},
+  {id:'r32_10', phase:'r32', date:'2026-06-30', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Toronto',          ch:'FS1'},
+  {id:'r32_11', phase:'r32', date:'2026-06-30', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
+  {id:'r32_12', phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Monterrey',        ch:'FS1'},
+  {id:'r32_13', phase:'r32', date:'2026-07-01', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'New York/NJ',      ch:'FOX'},
+  {id:'r32_14', phase:'r32', date:'2026-07-01', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FS1'},
+  {id:'r32_15', phase:'r32', date:'2026-07-01', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
+  {id:'r32_16', phase:'r32', date:'2026-07-01', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',        ch:'FS1'},
+  {id:'r32_17', phase:'r32', date:'2026-07-02', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Philadelphia',     ch:'FOX'},
+  {id:'r32_18', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FS1'},
+  {id:'r32_19', phase:'r32', date:'2026-07-02', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',       ch:'FOX'},
+  {id:'r32_20', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Guadalajara',      ch:'FS1'},
+  {id:'r32_21', phase:'r32', date:'2026-07-03', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Miami',            ch:'FOX'},
+  {id:'r32_22', phase:'r32', date:'2026-07-03', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Boston',           ch:'FS1'},
+  {id:'r32_23', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Los Angeles',      ch:'FOX'},
+  {id:'r32_24', phase:'r32', date:'2026-07-03', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Houston',          ch:'FS1'},
+  {id:'r32_25', phase:'r32', date:'2026-07-04', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FOX'},
+  {id:'r32_26', phase:'r32', date:'2026-07-04', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Mexico City',      ch:'FS1'},
+  {id:'r32_27', phase:'r32', date:'2026-07-04', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'San Francisco Bay', ch:'FOX'},
+  {id:'r32_28', phase:'r32', date:'2026-07-04', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Toronto',          ch:'FS1'},
+  {id:'r32_29', phase:'r32', date:'2026-07-05', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'New York/NJ',      ch:'FOX'},
+  {id:'r32_30', phase:'r32', date:'2026-07-05', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FS1'},
+  {id:'r32_31', phase:'r32', date:'2026-07-05', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FOX'},
+  {id:'r32_32', phase:'r32', date:'2026-07-05', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',        ch:'FS1'},
+  // ROUND OF 16
+  {id:'r16_1',  phase:'r16', date:'2026-07-07', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
+  {id:'r16_2',  phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',        ch:'FOX'},
+  {id:'r16_3',  phase:'r16', date:'2026-07-08', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FOX'},
+  {id:'r16_4',  phase:'r16', date:'2026-07-08', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FOX'},
+  {id:'r16_5',  phase:'r16', date:'2026-07-09', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Boston',           ch:'FOX'},
+  {id:'r16_6',  phase:'r16', date:'2026-07-09', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',            ch:'FOX'},
+  {id:'r16_7',  phase:'r16', date:'2026-07-10', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Houston',          ch:'FOX'},
+  {id:'r16_8',  phase:'r16', date:'2026-07-10', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',      ch:'FOX'},
+  {id:'r16_9',  phase:'r16', date:'2026-07-11', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'San Francisco Bay', ch:'FOX'},
+  {id:'r16_10', phase:'r16', date:'2026-07-11', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Los Angeles',      ch:'FOX'},
+  {id:'r16_11', phase:'r16', date:'2026-07-12', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',       ch:'FOX'},
+  {id:'r16_12', phase:'r16', date:'2026-07-12', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Philadelphia',     ch:'FOX'},
+  {id:'r16_13', phase:'r16', date:'2026-07-13', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Toronto',          ch:'FOX'},
+  {id:'r16_14', phase:'r16', date:'2026-07-13', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
+  // QUARTERFINALS
+  {id:'qf_1', phase:'qf', date:'2026-07-15', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',       ch:'FOX'},
+  {id:'qf_2', phase:'qf', date:'2026-07-15', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',      ch:'FOX'},
+  {id:'qf_3', phase:'qf', date:'2026-07-16', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',  ch:'FOX'},
+  {id:'qf_4', phase:'qf', date:'2026-07-16', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',        ch:'FOX'},
+  {id:'qf_5', phase:'qf', date:'2026-07-17', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',  ch:'FOX'},
+  // SEMIFINALS
+  {id:'sf_1', phase:'sf', date:'2026-07-18', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',       ch:'FOX'},
+  {id:'sf_2', phase:'sf', date:'2026-07-19', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'New York/NJ',  ch:'FOX'},
+  // FINAL
+  {id:'final', phase:'final', date:'2026-07-19', pdt:'2:00 pm', t1:'TBD', t2:'TBD', venue:'New York/NJ', ch:'FOX'},
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let scores = {};     // key: "Team1 v Team2 YYYY-MM-DD" -> {score1, score2, winner, status}
+let activePhase = 'all';
+let searchText   = '';
+
+// ─────────────────────────────────────────────
+// OPENFOOTBALL DATA FETCH
+// Tries the 2026 worldcup.json; falls back gracefully
+// ─────────────────────────────────────────────
+const OF_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+
+function normalizeName(n) {
+  if (!n) return '';
+  return n.trim()
+    .replace(/Türkiye|Turkey/i, 'Türkiye')
+    .replace(/Côte d'Ivoire|Ivory Coast/i, 'Ivory Coast')
+    .replace(/Bosnia[- &]+Herzegovina/i, 'Bosnia and Herzegovina')
+    .replace(/DR Congo|Congo DR/i, 'Congo DR')
+    .replace(/Czech Republic/i, 'Czechia')
+    .replace(/Korea Republic|South Korea/i, 'South Korea')
+    .replace(/Curaçao|Curacao/i, 'Curaçao')
+    .replace(/United States|USA/i, 'USA');
+}
+
+function scoreKey(t1, t2, date) {
+  return `${normalizeName(t1)} v ${normalizeName(t2)} ${date}`;
+}
+
+async function fetchScores() {
+  setSyncState('loading');
+  try {
+    const res = await fetch(OF_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    scores = {};
+    const allMatches = [];
+    if (data.rounds) data.rounds.forEach(r => r.matches && r.matches.forEach(m => allMatches.push(m)));
+    else if (data.matches) data.matches.forEach(m => allMatches.push(m));
+
+    allMatches.forEach(m => {
+      const date = m.date || '';
+      const t1 = normalizeName(m.team1?.name || m.team1 || '');
+      const t2 = normalizeName(m.team2?.name || m.team2 || '');
+      if (!t1 || !t2 || !date) return;
+      const key = scoreKey(t1, t2, date);
+      const s = m.score || m.result || {};
+      const ft = s.ft || s.score || null;
+      if (ft && Array.isArray(ft) && ft.length === 2) {
+        const s1 = ft[0], s2 = ft[1];
+        let winner = null;
+        if (s1 > s2) winner = t1;
+        else if (s2 > s1) winner = t2;
+        scores[key] = { score1: s1, score2: s2, winner, status: 'FT' };
+      }
+    });
+
+    setSyncState('ok');
+    render();
+    return true;
+  } catch (e) {
+    console.warn('openfootball fetch failed:', e);
+    setSyncState('error');
+    render();
+    return false;
+  }
+}
+
+function setSyncState(state) {
+  const dot   = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  dot.className = 'sync-dot';
+  if (state === 'loading') { label.textContent = 'Updating…'; }
+  else if (state === 'ok') { dot.classList.add('ok'); label.textContent = 'Live data'; }
+  else if (state === 'error') { label.textContent = 'Offline'; }
+}
+
+// ─────────────────────────────────────────────
+// RENDERING
+// ─────────────────────────────────────────────
+const PHASE_LABELS = { group:'Group Stage', r32:'Round of 32', r16:'Round of 16', qf:'Quarterfinals', sf:'Semifinals', final:'Final' };
+const PHASE_ORDER  = ['group','r32','r16','qf','sf','final'];
+
+function dayLabel(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+}
+
+function getScore(m) {
+  const k = scoreKey(m.t1, m.t2, m.date);
+  return scores[k] || null;
+}
+
+function isLiveNow(m) {
+  // Rough heuristic: match date is today and within 2hrs of kickoff
+  const now = new Date();
+  const pdtOffset = -7 * 60; // minutes
+  const nowPDT = new Date(now.getTime() + (now.getTimezoneOffset() + pdtOffset) * 60000);
+  const todayStr = nowPDT.toISOString().slice(0,10);
+  if (m.date !== todayStr) return false;
+  const score = getScore(m);
+  if (score) return false; // already finished
+  const [hr, min] = m.pdt.replace(' am','').replace(' pm','').split(':').map(Number);
+  const isPM = m.pdt.includes('pm') && hr !== 12;
+  const kickoffH = isPM ? hr + 12 : hr;
+  const kickoffMins = kickoffH * 60 + min;
+  const nowMins = nowPDT.getHours() * 60 + nowPDT.getMinutes();
+  return nowMins >= kickoffMins && nowMins <= kickoffMins + 120;
+}
+
+function matchHtml(m) {
+  const sc = getScore(m);
+  const live = isLiveNow(m);
+  const isTBD = m.t1 === 'TBD' || m.t2 === 'TBD';
+
+  // Class
+  let rowClass = 'match';
+  if (m.usa) rowClass += ' usa';
+  if (live)  rowClass += ' live-now';
+  if (sc)    rowClass += ' finished';
+
+  // Time + badge
+  let timeBadge = '';
+  if (live) timeBadge = '<span class="m-badge live-badge">LIVE</span>';
+  else if (sc) timeBadge = '<span class="m-badge fin-badge">FT</span>';
+  else if (m.usa) timeBadge = '<span class="m-badge usa-badge">🇺🇸</span>';
+  else if (isTBD) timeBadge = '<span class="m-badge tbd-badge">TBD</span>';
+
+  // Teams / score
+  const f1 = flag(m.t1), f2 = flag(m.t2);
+  const w1 = sc && sc.winner === m.t1 ? ' winner' : '';
+  const w2 = sc && sc.winner === m.t2 ? ' winner' : '';
+
+  let teamsHtml;
+  if (isTBD && !sc) {
+    teamsHtml = `<span class="m-team" style="color:var(--muted)">TBD <span class="m-vs">vs</span> TBD</span>`;
+  } else if (sc) {
+    teamsHtml = `
+      <span class="m-team${w1}">${f1 ? `<span class="m-flag">${f1}</span>` : ''} ${m.t1}</span>
+      <span class="m-score">${sc.score1}–${sc.score2}</span>
+      <span class="m-team${w2}">${f2 ? `<span class="m-flag">${f2}</span>` : ''} ${m.t2}</span>`;
+  } else {
+    teamsHtml = `
+      <span class="m-team">${f1 ? `<span class="m-flag">${f1}</span>` : ''} ${m.t1}</span>
+      <span class="m-vs">vs</span>
+      <span class="m-team">${f2 ? `<span class="m-flag">${f2}</span>` : ''} ${m.t2}</span>`;
+  }
+
+  const groupTag = m.group ? `<span class="m-group">Grp ${m.group}</span>` : '';
+
+  return `
+    <div class="${rowClass}">
+      <div class="m-time">${m.pdt} <span class="tz">PDT</span>${timeBadge}</div>
+      <div class="m-teams">
+        <div class="m-matchup">${teamsHtml}</div>
+        <div class="m-meta">${groupTag}</div>
+      </div>
+      <div class="m-right">
+        <div class="m-venue">${m.venue}</div>
+        <span class="m-ch ch-${m.ch}">${m.ch}</span>
+      </div>
+    </div>`;
+}
+
+function render() {
+  const filtered = FIXTURES.filter(m => {
+    if (activePhase === 'usa') return m.usa;
+    if (activePhase !== 'all' && m.phase !== activePhase) return false;
+    if (searchText) {
+      const q = searchText.toLowerCase();
+      return m.t1.toLowerCase().includes(q) ||
+             m.t2.toLowerCase().includes(q) ||
+             m.venue.toLowerCase().includes(q) ||
+             (m.group||'').toLowerCase().includes(q);
+    }
+    return true;
+  });
+
+  document.getElementById('count-badge').textContent =
+    filtered.length + ' match' + (filtered.length !== 1 ? 'es' : '');
+
+  // Group by phase then day
+  const byPhase = {};
+  filtered.forEach(m => {
+    if (!byPhase[m.phase]) byPhase[m.phase] = {};
+    const d = dayLabel(m.date);
+    if (!byPhase[m.phase][d]) byPhase[m.phase][d] = [];
+    byPhase[m.phase][d].push(m);
+  });
+
+  let html = '';
+  PHASE_ORDER.forEach(ph => {
+    if (!byPhase[ph]) return;
+    html += `<div class="phase-block"><div class="phase-label">${PHASE_LABELS[ph]}</div>`;
+    Object.entries(byPhase[ph]).forEach(([day, games]) => {
+      html += `<div class="day-block"><div class="day-header">${day}</div>`;
+      games.forEach(m => { html += matchHtml(m); });
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+
+  if (!html) {
+    html = '<div class="empty">No matches found.</div>';
+  }
+
+  document.getElementById('main').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// CONTROLS
+// ─────────────────────────────────────────────
+document.getElementById('phase-pills').addEventListener('click', e => {
+  const btn = e.target.closest('.pill');
+  if (!btn) return;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  activePhase = btn.dataset.phase;
+  render();
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchText = e.target.value;
+  render();
+});
+
+// ─────────────────────────────────────────────
+// INIT + AUTO-REFRESH
+// ─────────────────────────────────────────────
+fetchScores();
+// Refresh every 5 minutes
+setInterval(fetchScores, 5 * 60 * 1000);
+</script>
+</body>
+</html>
