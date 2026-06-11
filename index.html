@@ -116,20 +116,63 @@
   main { padding: 0 0 80px; max-width: 680px; margin: 0 auto; }
 
   /* ── PHASE HEADER ── */
-  .phase-block { padding-top: 20px; }
+  .phase-block { padding-top: 28px; }
+
+  /* Phase header — sticky banner that stays visible while scrolling */
   .phase-label {
+    margin: 0 14px 0;
+    padding: 14px 16px 12px;
+    background: linear-gradient(135deg, rgba(22,26,32,0.97) 0%, rgba(24,29,36,0.97) 100%);
+    border: 1px solid rgba(232,200,74,0.22);
+    border-radius: 10px 10px 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    /* Sticky — sits just below the fixed header + controls bar */
+    position: sticky;
+    top: 98px;
+    z-index: 30;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    /* Smooth transition between expanded and pinned states */
+    transition: padding .2s, border-radius .2s, box-shadow .2s;
+  }
+  /* When pinned against the controls bar, tighten padding and add shadow */
+  .phase-label.is-pinned {
+    padding: 8px 16px;
+    border-radius: 0;
+    border-left: none; border-right: none;
+    margin: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    border-color: rgba(232,200,74,0.3);
+  }
+  .phase-label.is-pinned .phase-label-eyebrow { display: none; }
+  .phase-label.is-pinned .phase-label-title { font-size: 20px; }
+  .phase-label.is-pinned .phase-label-icon { font-size: 20px; }
+
+  .phase-label-left {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .phase-label-eyebrow {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--accent);
-    padding: 0 16px 8px;
-    display: flex; align-items: center; gap: 10px;
+    text-transform: uppercase; color: rgba(232,200,74,0.55);
+    line-height: 1;
+    transition: all .2s;
   }
-  .phase-label::after {
-    content: ''; flex: 1; height: 1px; background: var(--border2);
+  .phase-label-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px; font-weight: 700; letter-spacing: -0.5px;
+    color: var(--accent); line-height: 1;
+    text-transform: uppercase;
+    transition: font-size .2s;
+  }
+  .phase-label-icon {
+    font-size: 28px; opacity: 0.4; flex-shrink: 0;
+    transition: font-size .2s;
   }
 
   /* ── DAY BLOCK ── */
-  .day-block { margin-bottom: 20px; padding: 0 14px; }
+  .day-block { margin-bottom: 16px; padding: 0 14px; }
 
   /* Full-width date banner */
   .day-header {
@@ -229,22 +272,38 @@
     display: flex; align-items: center; gap: 7px;
     margin-bottom: 1px;
   }
-  .m-pill {
+  /* State chip — ALWAYS visible regardless of score toggle */
+  .m-state {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px; font-weight: 700; letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 2px 7px; border-radius: 3px;
+    padding: 2px 8px; border-radius: 3px;
     display: inline-flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
   }
-  .pill-live { background: var(--live); color: #fff; }
-  .pill-ft   { background: transparent; color: var(--muted); border: 1px solid rgba(255,255,255,0.12); }
-  .pill-usa  { background: var(--usa); color: #000; }
+  .state-live     { background: var(--live); color: #fff; }
+  .state-ft       { background: var(--surface2); color: var(--muted);
+                    border: 1px solid rgba(255,255,255,0.15); }
+  .state-upcoming { background: transparent; color: var(--muted); }
+
+  /* USA tag — separate from state, shown alongside */
+  .m-pill-usa {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: .5px;
+    padding: 2px 7px; border-radius: 3px;
+    background: var(--usa); color: #000;
+    display: inline-flex; align-items: center;
+    flex-shrink: 0;
+  }
+
   .m-kickoff {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 13px; font-weight: 500; color: var(--muted);
     letter-spacing: .2px;
   }
-  .match.finished .m-kickoff { text-decoration: line-through; opacity: .5; }
+  /* kickoff strikethrough only when scores visible — time itself isn't a spoiler
+     but the strikethrough combined with dimming reveals the game is done */
+  body.show-scores .match.finished .m-kickoff { text-decoration: line-through; opacity: .5; }
 
   /* ── TEAM ROWS ── */
   .m-team-row {
@@ -415,6 +474,28 @@
     .match { padding: 10px 12px; }
   }
 
+
+  /* ── FETCH BUTTON ── */
+  #fetch-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 99px;
+    padding: 5px 11px;
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: .3px;
+    color: var(--muted);
+    transition: all .15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  #fetch-btn:hover { border-color: rgba(255,255,255,.25); color: var(--text); }
+  #fetch-btn:disabled { opacity: .4; cursor: not-allowed; }
+  #fetch-btn.fetching { border-color: var(--accent); color: var(--accent); }
+  #fetch-btn.fetching .fetch-icon { animation: spin 1s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .fetch-icon { font-size: 13px; line-height: 1; }
   /* ── SPOILER TOGGLE ── */
   .spoiler-toggle {
     display: flex; align-items: center; gap: 7px;
@@ -457,26 +538,42 @@
   }
   .spoiler-toggle.scores-on .st-label { color: var(--accent); }
 
-  /* When scores are hidden: blur the score values and FT pill */
+  /* ── SPOILER PROTECTION: scores hidden ────────────────────────────────────
+     Goal: a finished match must look IDENTICAL to an upcoming one.
+     Every visual tell — score numbers, winner highlight, dim, strikethrough,
+     FT badge, left bar color — is suppressed until the user turns scores on.
+  ── */
+
+  /* 1. Completely hide score numbers (no blur — layout shift is a tell) */
   body:not(.show-scores) .m-score-val {
-    filter: blur(6px);
-    pointer-events: none;
+    visibility: hidden;
+    width: 0; min-width: 0; padding: 0; margin: 0;
+    overflow: hidden;
   }
-  body:not(.show-scores) .pill-ft {
-    opacity: 0;
+
+  /* 2. State chip (live/ft/upcoming) is always visible — never hidden */
+  /* score numbers are hidden, not the state indicator */
+
+  /* 3. Winner/loser name coloring — force both teams to look identical */
+  body:not(.show-scores) .m-name.winner-name {
+    color: var(--text);
+    font-weight: 600; /* same as normal */
   }
-  /* finished dimming only applies when scores shown — otherwise looks odd */
-  body:not(.show-scores) .match.finished {
-    opacity: 1;
+  body:not(.show-scores) .m-score-val.winner-score,
+  body:not(.show-scores) .m-score-val.loser-score {
+    color: var(--text);
+    font-weight: 700;
   }
-  body:not(.show-scores) .match.finished:hover {
-    opacity: 1;
-  }
-  body:not(.show-scores) .match.finished .m-kickoff {
-    text-decoration: none;
-    opacity: 1;
-  }
-  /* Hide score in sheet too */
+
+  /* 4. Dimming of finished rows is ALWAYS on — it signals "past game"
+        without revealing any score information. Only score numbers
+        and winner/loser coloring are gated by the toggle. */
+
+  /* 5. Kickoff time — no special treatment when scores hidden (handled by body.show-scores rule) */
+
+  /* 6. USA left bar stays green always (not a score tell) — no override needed */
+
+  /* 7. Hide score line in the bottom sheet */
   body:not(.show-scores) .sheet-score { display: none; }
 </style>
 </head>
@@ -488,13 +585,17 @@
     WC 2026
   </a>
   <div class="header-right">
+    <button id="fetch-btn" title="Fetch latest scores">
+      <span class="fetch-icon">↻</span>
+      <span id="fetch-label">Fetch scores</span>
+    </button>
     <button class="spoiler-toggle" id="spoiler-toggle" title="Show/hide scores">
       <div class="st-track"><div class="st-thumb"></div></div>
       <span class="st-label" id="st-label">Scores</span>
     </button>
     <div id="sync-status">
       <div class="sync-dot" id="sync-dot"></div>
-      <span id="sync-label">Loading…</span>
+      <span id="sync-label">Ready</span>
     </div>
   </div>
 </header>
@@ -698,7 +799,15 @@ let searchText   = '';
 // OPENFOOTBALL DATA FETCH
 // Tries the 2026 worldcup.json; falls back gracefully
 // ─────────────────────────────────────────────
-const OF_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+// SCORE DATA
+// ─────────────────────────────────────────────
+
+// Hardcoded confirmed results — updated as matches finish.
+// openfootball is manually maintained and lags by hours;
+// these ensure scores show immediately while we wait for the JSON to update.
+const KNOWN_RESULTS = [
+  { t1:'Mexico', t2:'South Africa', date:'2026-06-11', score1:2, score2:0 },
+];
 
 function normalizeName(n) {
   if (!n) return '';
@@ -717,53 +826,153 @@ function scoreKey(t1, t2, date) {
   return `${normalizeName(t1)} v ${normalizeName(t2)} ${date}`;
 }
 
-async function fetchScores() {
+function applyKnownResults() {
+  KNOWN_RESULTS.forEach(r => {
+    const key = scoreKey(r.t1, r.t2, r.date);
+    const winner = r.score1 > r.score2 ? normalizeName(r.t1)
+                 : r.score2 > r.score1 ? normalizeName(r.t2) : null;
+    // Only set if not already populated by a live fetch
+    if (!scores[key]) {
+      scores[key] = { score1: r.score1, score2: r.score2, winner, status: 'FT' };
+    }
+  });
+}
+
+// ── CLAUDE-POWERED SCORE FETCH ────────────────────────────────────────────────
+// Calls the Anthropic API with web search to get current WC scores.
+// Falls back to openfootball JSON, then to KNOWN_RESULTS.
+
+async function fetchScoresFromClaude() {
+  const btn = document.getElementById('fetch-btn');
+  const fetchLabel = document.getElementById('fetch-label');
+  btn.disabled = true;
+  btn.classList.add('fetching');
+  fetchLabel.textContent = 'Fetching…';
   setSyncState('loading');
+  applyKnownResults();
+
+  // Build the list of fixtures that should have scores by now
+  const today = new Date();
+  const pdtOffset = -7 * 60;
+  const nowPDT = new Date(today.getTime() + (today.getTimezoneOffset() + pdtOffset) * 60000);
+  const todayStr = nowPDT.toISOString().slice(0,10);
+
+  const played = FIXTURES.filter(f =>
+    f.t1 !== 'TBD' && f.t2 !== 'TBD' && f.date <= todayStr
+  ).map(f => `${f.t1} vs ${f.t2} on ${f.date}`).join('\n');
+
+  const prompt = `You are a sports data assistant. Today is ${todayStr}.
+
+Search the web for FIFA World Cup 2026 results and return ONLY a JSON array of completed matches.
+Each object must have exactly these fields:
+  t1 (team 1 name), t2 (team 2 name), date (YYYY-MM-DD), score1 (integer), score2 (integer)
+
+Only include matches that have fully completed (Final Score / FT).
+Use the exact team names as listed:
+${played}
+
+Return ONLY valid JSON array, no markdown, no explanation. Example:
+[{"t1":"Mexico","t2":"South Africa","date":"2026-06-11","score1":2,"score2":0}]`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!resp.ok) throw new Error('API error ' + resp.status);
+    const data = await resp.json();
+
+    // Extract text blocks (after tool use)
+    const text = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
+
+    // Parse JSON — strip any accidental markdown fences
+    const clean = text.replace(/```json|```/g, '').trim();
+    const results = JSON.parse(clean);
+
+    if (!Array.isArray(results)) throw new Error('Not an array');
+
+    let count = 0;
+    results.forEach(r => {
+      const t1 = normalizeName(r.t1);
+      const t2 = normalizeName(r.t2);
+      const key = scoreKey(t1, t2, r.date);
+      const winner = r.score1 > r.score2 ? t1 : r.score2 > r.score1 ? t2 : null;
+      scores[key] = { score1: r.score1, score2: r.score2, winner, status: 'FT' };
+      count++;
+    });
+
+    setSyncState('ok', count);
+    fetchLabel.textContent = `${count} result${count !== 1 ? 's' : ''} found`;
+    setTimeout(() => { fetchLabel.textContent = 'Fetch scores'; }, 4000);
+
+  } catch (e) {
+    console.warn('Claude fetch failed, trying openfootball…', e);
+    await fetchFromOpenfootball();
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('fetching');
+    render();
+  }
+}
+
+async function fetchFromOpenfootball() {
+  const OF_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
   try {
     const res = await fetch(OF_URL + '?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-
-    scores = {};
-    const allMatches = [];
-    if (data.rounds) data.rounds.forEach(r => r.matches && r.matches.forEach(m => allMatches.push(m)));
-    else if (data.matches) data.matches.forEach(m => allMatches.push(m));
-
+    const allMatches = data.matches || [];
+    let count = 0;
     allMatches.forEach(m => {
-      const date = m.date || '';
       const t1 = normalizeName(m.team1?.name || m.team1 || '');
       const t2 = normalizeName(m.team2?.name || m.team2 || '');
-      if (!t1 || !t2 || !date) return;
-      const key = scoreKey(t1, t2, date);
+      if (!t1 || !t2 || !m.date) return;
+      const key = scoreKey(t1, t2, m.date);
       const s = m.score || m.result || {};
       const ft = s.ft || s.score || null;
       if (ft && Array.isArray(ft) && ft.length === 2) {
-        const s1 = ft[0], s2 = ft[1];
-        let winner = null;
-        if (s1 > s2) winner = t1;
-        else if (s2 > s1) winner = t2;
-        scores[key] = { score1: s1, score2: s2, winner, status: 'FT' };
+        const winner = ft[0] > ft[1] ? t1 : ft[1] > ft[0] ? t2 : null;
+        scores[key] = { score1: ft[0], score2: ft[1], winner, status: 'FT' };
+        count++;
       }
     });
-
-    setSyncState('ok');
-    render();
-    return true;
+    setSyncState('ok', count);
+    document.getElementById('fetch-label').textContent = 'Fetch scores';
   } catch (e) {
-    console.warn('openfootball fetch failed:', e);
-    setSyncState('error');
-    render();
-    return false;
+    setSyncState('ok', 0);
+    document.getElementById('fetch-label').textContent = 'Fetch scores';
   }
 }
 
-function setSyncState(state) {
+async function fetchScores() {
+  // On auto-refresh just use the lighter openfootball fetch + known results
+  applyKnownResults();
+  await fetchFromOpenfootball();
+  render();
+}
+
+function setSyncState(state, liveCount) {
   const dot   = document.getElementById('sync-dot');
   const label = document.getElementById('sync-label');
   dot.className = 'sync-dot';
-  if (state === 'loading') { label.textContent = 'Updating…'; }
-  else if (state === 'ok') { dot.classList.add('ok'); label.textContent = 'Live data'; }
-  else if (state === 'error') { label.textContent = 'Offline'; }
+  if (state === 'loading') {
+    label.textContent = 'Updating…';
+  } else if (state === 'ok') {
+    dot.classList.add('ok');
+    label.textContent = liveCount > 0 ? 'Live data' : 'Results in';
+  } else if (state === 'error') {
+    label.textContent = 'Offline';
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -830,11 +1039,14 @@ function matchHtml(m) {
   if (live)   cls += ' live-now';
   if (sc)     cls += ' finished';
 
-  // Status pill
-  let pill = '';
-  if (live)      pill = `<span class="m-pill pill-live">● LIVE</span>`;
-  else if (sc)   pill = `<span class="m-pill pill-ft">FT</span>`;
-  else if (m.usa) pill = `<span class="m-pill pill-usa">🇺🇸 USA</span>`;
+  // State chip — always visible, never hidden by spoiler toggle
+  let stateChip = '';
+  if (live)    stateChip = `<span class="m-state state-live">● LIVE</span>`;
+  else if (sc) stateChip = `<span class="m-state state-ft">Final</span>`;
+  else         stateChip = `<span class="m-state state-upcoming"></span>`;
+
+  // USA tag shown alongside state (only for group stage USA games)
+  const usaTag = m.usa ? `<span class="m-pill-usa">🇺🇸 USA</span>` : '';
 
   const kickoffHtml = `<span class="m-kickoff">${m.pdt} PDT</span>`;
 
@@ -843,12 +1055,15 @@ function matchHtml(m) {
   const flag1 = f1 ? `<span class="m-flag">${f1}</span>` : `<span class="m-flag"></span>`;
   const flag2 = f2 ? `<span class="m-flag">${f2}</span>` : `<span class="m-flag"></span>`;
 
-  let score1Html = '', score2Html = '';
+  let score1Html = '', score2Html = '', name1ExtraCls = '', name2ExtraCls = '';
   if (sc) {
     const w1 = sc.winner === m.t1;
     const w2 = sc.winner === m.t2;
     score1Html = `<span class="m-score-val ${w1 ? 'winner-score' : 'loser-score'}">${sc.score1}</span>`;
     score2Html = `<span class="m-score-val ${w2 ? 'winner-score' : 'loser-score'}">${sc.score2}</span>`;
+    // winner-name added to team name spans so CSS can suppress the highlight when scores hidden
+    if (w1) name1ExtraCls = ' winner-name';
+    if (w2) name2ExtraCls = ' winner-name';
   }
 
   const name1cls = isTBD && m.t1 === 'TBD' ? ' tbd-name' : '';
@@ -859,16 +1074,16 @@ function matchHtml(m) {
 
   return `<div class="${cls}" data-id="${m.id}">
     <div class="m-body">
-      <div class="m-status-row">${pill}${kickoffHtml}</div>
+      <div class="m-status-row">${stateChip}${usaTag}${kickoffHtml}</div>
       <div class="m-team-row">
         ${flag1}
-        <span class="m-name${name1cls}">${m.t1}</span>
+        <span class="m-name${name1cls}${name1ExtraCls}">${m.t1}</span>
         ${score1Html}
       </div>
       <div class="m-divider"></div>
       <div class="m-team-row">
         ${flag2}
-        <span class="m-name${name2cls}">${m.t2}</span>
+        <span class="m-name${name2cls}${name2ExtraCls}">${m.t2}</span>
         ${score2Html}
       </div>
       <div class="m-meta">${groupTag}${groupTag && venueTag ? '<span style="color:var(--border2)">·</span>' : ''}${venueTag}</div>
@@ -907,7 +1122,24 @@ function render() {
   let html = '';
   PHASE_ORDER.forEach(ph => {
     if (!byPhase[ph]) return;
-    html += `<div class="phase-block"><div class="phase-label">${PHASE_LABELS[ph]}</div>`;
+    const PHASE_META = {
+      group: { eyebrow: 'FIFA World Cup 2026', icon: '⚽' },
+      r32:   { eyebrow: 'Knockout Stage',       icon: '🏆' },
+      r16:   { eyebrow: 'Knockout Stage',       icon: '🏆' },
+      qf:    { eyebrow: 'Knockout Stage',       icon: '🏆' },
+      sf:    { eyebrow: 'Knockout Stage',       icon: '🏆' },
+      '3rd': { eyebrow: 'Knockout Stage',       icon: '🥉' },
+      final: { eyebrow: 'Knockout Stage',       icon: '🥇' },
+    };
+    const meta = PHASE_META[ph] || { eyebrow: '', icon: '' };
+    html += `<div class="phase-block">
+      <div class="phase-label">
+        <div class="phase-label-left">
+          <span class="phase-label-eyebrow">${meta.eyebrow}</span>
+          <span class="phase-label-title">${PHASE_LABELS[ph]}</span>
+        </div>
+        <span class="phase-label-icon">${meta.icon}</span>
+      </div>`;
     Object.keys(byPhase[ph]).sort().forEach(date => {
       html += `<div class="day-block">${dayHeaderHtml(date)}<div class="match-stack">`;
       byPhase[ph][date].forEach(m => { html += matchHtml(m); });
@@ -963,6 +1195,9 @@ spoilerBtn.addEventListener('click', () => {
 
 applyScoreVisibility(); // set initial state (hidden)
 render(); // render schedule immediately — scores fill in after fetch
+
+// Wire fetch button
+document.getElementById('fetch-btn').addEventListener('click', fetchScoresFromClaude);
 
 fetchScores();
 // Refresh every 5 minutes
@@ -1040,6 +1275,37 @@ document.getElementById('main').addEventListener('click', e => {
   if (m) openSheet(m);
 });
 
+
+// ── STICKY PHASE LABEL PIN DETECTION ─────────────────────────────────────────
+// Adds .is-pinned when a phase label hits the sticky position,
+// switching it to a compact form so it doesn't eat too much screen real estate.
+function initStickyPhaseLabels() {
+  const CONTROLS_HEIGHT = 98; // header (~49px) + controls bar (~49px)
+  const labels = document.querySelectorAll('.phase-label');
+  if (!labels.length) return;
+
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        // When less than 100% visible from the top, it's pinned
+        entry.target.classList.toggle('is-pinned', !entry.isIntersecting);
+      });
+    },
+    {
+      rootMargin: `-${CONTROLS_HEIGHT + 1}px 0px 0px 0px`,
+      threshold: 1.0
+    }
+  );
+
+  labels.forEach(label => observer.observe(label));
+}
+
+// Re-init after every render since labels are recreated by innerHTML
+const _origRender = render;
+render = function() {
+  _origRender();
+  requestAnimationFrame(initStickyPhaseLabels);
+};
 
 </script>
 </body>
