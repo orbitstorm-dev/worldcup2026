@@ -32,6 +32,7 @@
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 15px; }
+  html, body { overflow-x: hidden; overflow-y: auto; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -113,7 +114,7 @@
   }
 
   /* ── MAIN ── */
-  main { padding: 0 0 80px; max-width: 680px; margin: 0 auto; }
+  main { padding: 0 0 80px; max-width: 680px; margin: 0 auto; overflow: visible; }
 
   /* ── PHASE HEADER ── */
   .phase-block { padding-top: 28px; }
@@ -126,12 +127,15 @@
     border: 1px solid rgba(232,200,74,0.22);
     border-radius: 10px 10px 0 0;
     display: flex; flex-direction: column; gap: 4px;
+    position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 98px;
     z-index: 30;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     transition: padding .2s, border-radius .2s, box-shadow .2s;
+    /* Isolation prevents transform/filter on ancestors from breaking sticky */
+    isolation: isolate;
   }
   /* When pinned — compact single row */
   .phase-label.is-pinned {
@@ -629,7 +633,6 @@
 <div class="controls">
   <div class="pill-group" id="phase-pills">
     <button class="pill active" data-phase="all">All</button>
-    <button class="pill" data-phase="group">Groups</button>
     <button class="pill" data-phase="r32">R32</button>
     <button class="pill" data-phase="r16">R16</button>
     <button class="pill" data-phase="qf">QF</button>
