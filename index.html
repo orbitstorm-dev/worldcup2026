@@ -32,7 +32,7 @@
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 15px; }
-  html, body { overflow-x: hidden; overflow-y: auto; }
+  html, body { overflow: auto; } /* iOS WebKit: never set overflow:hidden on html/body — breaks position:sticky */
   body {
     background: var(--bg);
     color: var(--text);
@@ -114,7 +114,7 @@
   }
 
   /* ── MAIN ── */
-  main { padding: 0 0 80px; max-width: 680px; margin: 0 auto; overflow: visible; }
+  main { padding: 0 0 80px; max-width: 680px; margin: 0 auto; }
 
   /* ── PHASE HEADER ── */
   .phase-block { padding-top: 28px; }
