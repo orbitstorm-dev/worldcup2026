@@ -44,11 +44,10 @@
 
   /* ── HEADER ── */
   header {
-    position: -webkit-sticky;
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(13,15,18,0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    background: rgba(13,15,18,0.96);
     border-bottom: 1px solid var(--border2);
     padding: 10px 16px;
     display: flex; align-items: center; gap: 12px;
@@ -80,8 +79,9 @@
     display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    position: -webkit-sticky;
-    position: sticky; top: 49px; z-index: 40;
+    position: fixed;
+    top: 49px; left: 0; right: 0;
+    z-index: 40;
   }
   .pill-group { display: flex; gap: 4px; flex-wrap: wrap; }
   .pill {
@@ -116,7 +116,7 @@
   }
 
   /* ── MAIN ── */
-  main { padding: 0 0 80px; max-width: 680px; margin: 0 auto; }
+  main { padding: 106px 0 80px; max-width: 680px; margin: 0 auto; }
 
   /* ── PHASE HEADER ── */
   .phase-block { padding-top: 28px; }
@@ -133,12 +133,18 @@
     position: sticky;
     top: var(--sticky-phase-top, 98px); /* set dynamically by JS after measuring */
     z-index: 30;
+    /* No backdrop-filter on sticky element — breaks iOS WebKit sticky */
+    transition: padding .2s, border-radius .2s, box-shadow .2s;
+  }
+  header::before, .phase-label::before {
+    content: '';
+    position: absolute; inset: 0; z-index: -1;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    transition: padding .2s, border-radius .2s, box-shadow .2s;
-    /* Isolation prevents transform/filter on ancestors from breaking sticky */
-    isolation: isolate;
+    pointer-events: none;
+    border-radius: inherit;
   }
+
   /* When pinned — compact single row */
   .phase-label.is-pinned {
     padding: 7px 16px;
@@ -1373,12 +1379,16 @@ render = function() {
 function updateStickyOffset() {
   const hdr  = document.querySelector('header');
   const ctrl = document.querySelector('.controls');
-  if (!hdr || !ctrl) return;
-  const offset = hdr.getBoundingClientRect().height +
-                 ctrl.getBoundingClientRect().height;
-  document.documentElement.style.setProperty('--sticky-phase-top', offset + 'px');
-  // Also keep controls top in sync (in case header height changes)
-  ctrl.style.top = hdr.getBoundingClientRect().height + 'px';
+  const mainEl = document.getElementById('main');
+  if (!hdr || !ctrl || !mainEl) return;
+  const hdrH  = hdr.getBoundingClientRect().height;
+  const ctrlH = ctrl.getBoundingClientRect().height;
+  // Keep controls pinned directly below header
+  ctrl.style.top = hdrH + 'px';
+  // Push main content below both fixed bars
+  mainEl.style.paddingTop = (hdrH + ctrlH + 8) + 'px';
+  // Update phase label sticky offset
+  document.documentElement.style.setProperty('--sticky-phase-top', (hdrH + ctrlH) + 'px');
 }
 updateStickyOffset();
 window.addEventListener('resize', updateStickyOffset);
