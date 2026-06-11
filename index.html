@@ -44,6 +44,7 @@
 
   /* ── HEADER ── */
   header {
+    position: -webkit-sticky;
     position: sticky; top: 0; z-index: 50;
     background: rgba(13,15,18,0.92);
     backdrop-filter: blur(12px);
@@ -79,6 +80,7 @@
     display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
+    position: -webkit-sticky;
     position: sticky; top: 49px; z-index: 40;
   }
   .pill-group { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -129,7 +131,7 @@
     display: flex; flex-direction: column; gap: 4px;
     position: -webkit-sticky; /* Safari */
     position: sticky;
-    top: 98px;
+    top: var(--sticky-phase-top, 98px); /* set dynamically by JS after measuring */
     z-index: 30;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1364,6 +1366,23 @@ render = function() {
   _origRender();
   requestAnimationFrame(initStickyPhaseLabels);
 };
+
+// ── DYNAMIC STICKY OFFSET ─────────────────────────────────────────────────────
+// Measure actual header + controls height so phase labels stick at the right spot
+// regardless of pill wrapping or font scaling on mobile.
+function updateStickyOffset() {
+  const hdr  = document.querySelector('header');
+  const ctrl = document.querySelector('.controls');
+  if (!hdr || !ctrl) return;
+  const offset = hdr.getBoundingClientRect().height +
+                 ctrl.getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--sticky-phase-top', offset + 'px');
+  // Also keep controls top in sync (in case header height changes)
+  ctrl.style.top = hdr.getBoundingClientRect().height + 'px';
+}
+updateStickyOffset();
+window.addEventListener('resize', updateStickyOffset);
+
 
 </script>
 </body>
