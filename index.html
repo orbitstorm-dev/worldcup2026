@@ -518,16 +518,25 @@
   <div class="count-badge" id="count-badge"></div>
 </div>
 
-<main id="main">
-  <div class="skeleton-wrap">
-    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
-    <div class="skel"></div><div class="skel"></div>
-  </div>
-</main>
+<main id="main"></main>
 
 <footer>
   Data: openfootball/worldcup.json — Times in Pacific (PDT) — Not affiliated with FIFA
 </footer>
+
+
+<!-- WATCH SHEET -->
+<div class="sheet-overlay" id="sheet-overlay">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-match">
+      <div class="sheet-teams" id="sheet-teams"></div>
+      <div class="sheet-meta" id="sheet-meta"></div>
+    </div>
+    <div class="sheet-actions" id="sheet-actions"></div>
+    <button class="sheet-cancel" id="sheet-cancel">Cancel</button>
+  </div>
+</div>
 
 <script>
 // ─────────────────────────────────────────────
@@ -675,6 +684,8 @@ const FIXTURES = [
   {id:'3rd',  phase:'3rd', date:'2026-07-18', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
   // FINAL — Jul 19
   {id:'final', phase:'final', date:'2026-07-19', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'New York/NJ',     ch:'FOX'},
+];
+
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
@@ -951,6 +962,7 @@ spoilerBtn.addEventListener('click', () => {
 });
 
 applyScoreVisibility(); // set initial state (hidden)
+render(); // render schedule immediately — scores fill in after fetch
 
 fetchScores();
 // Refresh every 5 minutes
@@ -1030,19 +1042,5 @@ document.getElementById('main').addEventListener('click', e => {
 
 
 </script>
-
-<!-- WATCH SHEET -->
-<div class="sheet-overlay" id="sheet-overlay">
-  <div class="sheet" id="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-match">
-      <div class="sheet-teams" id="sheet-teams"></div>
-      <div class="sheet-meta" id="sheet-meta"></div>
-    </div>
-    <div class="sheet-actions" id="sheet-actions"></div>
-    <button class="sheet-cancel" id="sheet-cancel">Cancel</button>
-  </div>
-</div>
-
 </body>
 </html>
