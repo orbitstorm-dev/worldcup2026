@@ -414,6 +414,70 @@
     .m-score-val { font-size: 20px; }
     .match { padding: 10px 12px; }
   }
+
+  /* ── SPOILER TOGGLE ── */
+  .spoiler-toggle {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 99px;
+    padding: 5px 10px 5px 7px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color .15s;
+    flex-shrink: 0;
+  }
+  .spoiler-toggle:hover { border-color: rgba(255,255,255,.25); }
+  .spoiler-toggle.scores-on {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  /* the actual switch track */
+  .st-track {
+    width: 30px; height: 17px; border-radius: 99px;
+    background: var(--border2);
+    position: relative; flex-shrink: 0;
+    transition: background .2s;
+  }
+  .spoiler-toggle.scores-on .st-track { background: var(--accent); }
+  /* thumb */
+  .st-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: #fff;
+    transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+  .spoiler-toggle.scores-on .st-thumb { transform: translateX(13px); }
+  .st-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: .3px;
+    color: var(--muted); white-space: nowrap;
+    transition: color .15s;
+  }
+  .spoiler-toggle.scores-on .st-label { color: var(--accent); }
+
+  /* When scores are hidden: blur the score values and FT pill */
+  body:not(.show-scores) .m-score-val {
+    filter: blur(6px);
+    pointer-events: none;
+  }
+  body:not(.show-scores) .pill-ft {
+    opacity: 0;
+  }
+  /* finished dimming only applies when scores shown — otherwise looks odd */
+  body:not(.show-scores) .match.finished {
+    opacity: 1;
+  }
+  body:not(.show-scores) .match.finished:hover {
+    opacity: 1;
+  }
+  body:not(.show-scores) .match.finished .m-kickoff {
+    text-decoration: none;
+    opacity: 1;
+  }
+  /* Hide score in sheet too */
+  body:not(.show-scores) .sheet-score { display: none; }
 </style>
 </head>
 <body>
@@ -424,6 +488,10 @@
     WC 2026
   </a>
   <div class="header-right">
+    <button class="spoiler-toggle" id="spoiler-toggle" title="Show/hide scores">
+      <div class="st-track"><div class="st-thumb"></div></div>
+      <span class="st-label" id="st-label">Scores</span>
+    </button>
     <div id="sync-status">
       <div class="sync-dot" id="sync-dot"></div>
       <span id="sync-label">Loading…</span>
@@ -439,6 +507,7 @@
     <button class="pill" data-phase="r16">R16</button>
     <button class="pill" data-phase="qf">QF</button>
     <button class="pill" data-phase="sf">SF</button>
+    <button class="pill" data-phase="3rd">3rd</button>
     <button class="pill" data-phase="final">Final</button>
     <button class="pill usa-pill" data-phase="usa">🇺🇸 USA</button>
   </div>
@@ -568,71 +637,49 @@ const FIXTURES = [
   {id:'g_l6', phase:'group', group:'L', date:'2026-06-27', pdt:'2:00 pm',  t1:'Croatia',             t2:'Ghana',                venue:'Philadelphia',       ch:'FS1'},
   {id:'g_k5', phase:'group', group:'K', date:'2026-06-27', pdt:'5:00 pm',  t1:'Colombia',            t2:'Portugal',             venue:'Kansas City',        ch:'FOX'},
   {id:'g_k6', phase:'group', group:'K', date:'2026-06-27', pdt:'7:30 pm',  t1:'Congo DR',            t2:'Uzbekistan',           venue:'Atlanta',            ch:'FS1'},
-  // ROUND OF 32
-  {id:'r32_1',  phase:'r32', date:'2026-06-28', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FOX'},
-  {id:'r32_2',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Guadalajara',      ch:'FS1'},
-  {id:'r32_3',  phase:'r32', date:'2026-06-28', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',       ch:'FOX'},
-  {id:'r32_4',  phase:'r32', date:'2026-06-28', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Los Angeles',      ch:'FS1'},
-  {id:'r32_5',  phase:'r32', date:'2026-06-29', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Boston',           ch:'FOX'},
-  {id:'r32_6',  phase:'r32', date:'2026-06-29', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Mexico City',      ch:'FS1'},
-  {id:'r32_7',  phase:'r32', date:'2026-06-29', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FOX'},
-  {id:'r32_8',  phase:'r32', date:'2026-06-29', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',            ch:'FS1'},
-  {id:'r32_9',  phase:'r32', date:'2026-06-30', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Houston',          ch:'FOX'},
-  {id:'r32_10', phase:'r32', date:'2026-06-30', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Toronto',          ch:'FS1'},
-  {id:'r32_11', phase:'r32', date:'2026-06-30', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
-  {id:'r32_12', phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Monterrey',        ch:'FS1'},
-  {id:'r32_13', phase:'r32', date:'2026-07-01', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'New York/NJ',      ch:'FOX'},
-  {id:'r32_14', phase:'r32', date:'2026-07-01', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FS1'},
-  {id:'r32_15', phase:'r32', date:'2026-07-01', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
-  {id:'r32_16', phase:'r32', date:'2026-07-01', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',        ch:'FS1'},
-  {id:'r32_17', phase:'r32', date:'2026-07-02', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Philadelphia',     ch:'FOX'},
-  {id:'r32_18', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FS1'},
-  {id:'r32_19', phase:'r32', date:'2026-07-02', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',       ch:'FOX'},
-  {id:'r32_20', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Guadalajara',      ch:'FS1'},
-  {id:'r32_21', phase:'r32', date:'2026-07-03', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Miami',            ch:'FOX'},
-  {id:'r32_22', phase:'r32', date:'2026-07-03', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Boston',           ch:'FS1'},
-  {id:'r32_23', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Los Angeles',      ch:'FOX'},
-  {id:'r32_24', phase:'r32', date:'2026-07-03', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Houston',          ch:'FS1'},
-  {id:'r32_25', phase:'r32', date:'2026-07-04', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FOX'},
-  {id:'r32_26', phase:'r32', date:'2026-07-04', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Mexico City',      ch:'FS1'},
-  {id:'r32_27', phase:'r32', date:'2026-07-04', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'San Francisco Bay', ch:'FOX'},
-  {id:'r32_28', phase:'r32', date:'2026-07-04', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Toronto',          ch:'FS1'},
-  {id:'r32_29', phase:'r32', date:'2026-07-05', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'New York/NJ',      ch:'FOX'},
-  {id:'r32_30', phase:'r32', date:'2026-07-05', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FS1'},
-  {id:'r32_31', phase:'r32', date:'2026-07-05', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FOX'},
-  {id:'r32_32', phase:'r32', date:'2026-07-05', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',        ch:'FS1'},
-  // ROUND OF 16
-  {id:'r16_1',  phase:'r16', date:'2026-07-07', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
-  {id:'r16_2',  phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',        ch:'FOX'},
-  {id:'r16_3',  phase:'r16', date:'2026-07-08', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Kansas City',      ch:'FOX'},
-  {id:'r16_4',  phase:'r16', date:'2026-07-08', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Dallas',           ch:'FOX'},
-  {id:'r16_5',  phase:'r16', date:'2026-07-09', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Boston',           ch:'FOX'},
-  {id:'r16_6',  phase:'r16', date:'2026-07-09', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',            ch:'FOX'},
-  {id:'r16_7',  phase:'r16', date:'2026-07-10', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Houston',          ch:'FOX'},
-  {id:'r16_8',  phase:'r16', date:'2026-07-10', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',      ch:'FOX'},
-  {id:'r16_9',  phase:'r16', date:'2026-07-11', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'San Francisco Bay', ch:'FOX'},
-  {id:'r16_10', phase:'r16', date:'2026-07-11', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Los Angeles',      ch:'FOX'},
-  {id:'r16_11', phase:'r16', date:'2026-07-12', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',       ch:'FOX'},
-  {id:'r16_12', phase:'r16', date:'2026-07-12', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Philadelphia',     ch:'FOX'},
-  {id:'r16_13', phase:'r16', date:'2026-07-13', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Toronto',          ch:'FOX'},
-  {id:'r16_14', phase:'r16', date:'2026-07-13', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',          ch:'FOX'},
-  // QUARTERFINALS
-  {id:'qf_1', phase:'qf', date:'2026-07-15', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',       ch:'FOX'},
-  {id:'qf_2', phase:'qf', date:'2026-07-15', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Atlanta',      ch:'FOX'},
-  {id:'qf_3', phase:'qf', date:'2026-07-16', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',  ch:'FOX'},
-  {id:'qf_4', phase:'qf', date:'2026-07-16', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',        ch:'FOX'},
-  {id:'qf_5', phase:'qf', date:'2026-07-17', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',  ch:'FOX'},
-  // SEMIFINALS
-  {id:'sf_1', phase:'sf', date:'2026-07-18', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',       ch:'FOX'},
-  {id:'sf_2', phase:'sf', date:'2026-07-19', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'New York/NJ',  ch:'FOX'},
-  // FINAL
-  {id:'final', phase:'final', date:'2026-07-19', pdt:'2:00 pm', t1:'TBD', t2:'TBD', venue:'New York/NJ', ch:'FOX'},
-];
-
+  // ROUND OF 32 — Jun 28–Jul 3
+  {id:'r32_1',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',        ch:'FOX'},
+  {id:'r32_2',  phase:'r32', date:'2026-06-29', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',             ch:'FOX'},
+  {id:'r32_3',  phase:'r32', date:'2026-06-29', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Monterrey',          ch:'FS1'},
+  {id:'r32_4',  phase:'r32', date:'2026-06-29', pdt:'10:00 am', t1:'TBD', t2:'TBD', venue:'Houston',            ch:'FS1'},
+  {id:'r32_5',  phase:'r32', date:'2026-06-30', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',        ch:'FOX'},
+  {id:'r32_6',  phase:'r32', date:'2026-06-30', pdt:'10:00 am', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
+  {id:'r32_7',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Mexico City',        ch:'FS1'},
+  {id:'r32_8',  phase:'r32', date:'2026-07-01', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FOX'},
+  {id:'r32_9',  phase:'r32', date:'2026-07-01', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'San Francisco Bay',  ch:'FS1'},
+  {id:'r32_10', phase:'r32', date:'2026-07-01', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',          ch:'FOX'},
+  {id:'r32_11', phase:'r32', date:'2026-07-02', pdt:'4:00 pm',  t1:'TBD', t2:'TBD', venue:'Toronto',            ch:'FS1'},
+  {id:'r32_12', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',        ch:'FOX'},
+  {id:'r32_13', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',          ch:'FS1'},
+  {id:'r32_14', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
+  {id:'r32_15', phase:'r32', date:'2026-07-03', pdt:'6:30 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',        ch:'FS1'},
+  {id:'r32_16', phase:'r32', date:'2026-07-03', pdt:'11:00 am', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
+  // ROUND OF 16 — Jul 4–7
+  {id:'r16_1', phase:'r16', date:'2026-07-04', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Philadelphia',       ch:'FOX'},
+  {id:'r16_2', phase:'r16', date:'2026-07-04', pdt:'10:00 am', t1:'TBD', t2:'TBD', venue:'Houston',            ch:'FOX'},
+  {id:'r16_3', phase:'r16', date:'2026-07-05', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',        ch:'FOX'},
+  {id:'r16_4', phase:'r16', date:'2026-07-05', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Mexico City',        ch:'FS1'},
+  {id:'r16_5', phase:'r16', date:'2026-07-06', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
+  {id:'r16_6', phase:'r16', date:'2026-07-06', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',          ch:'FOX'},
+  {id:'r16_7', phase:'r16', date:'2026-07-06', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FS1'},
+  {id:'r16_8', phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',          ch:'FOX'},
+  // QUARTERFINALS — Jul 9–11
+  {id:'qf_1', phase:'qf', date:'2026-07-09', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',              ch:'FOX'},
+  {id:'qf_2', phase:'qf', date:'2026-07-10', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',         ch:'FOX'},
+  {id:'qf_3', phase:'qf', date:'2026-07-11', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',               ch:'FOX'},
+  {id:'qf_4', phase:'qf', date:'2026-07-11', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',         ch:'FS1'},
+  // SEMIFINALS — Jul 14–15
+  {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',              ch:'FOX'},
+  {id:'sf_2', phase:'sf', date:'2026-07-15', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Atlanta',             ch:'FOX'},
+  // THIRD PLACE — Jul 18
+  {id:'3rd',  phase:'3rd', date:'2026-07-18', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
+  // FINAL — Jul 19
+  {id:'final', phase:'final', date:'2026-07-19', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'New York/NJ',     ch:'FOX'},
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
 let scores = {};     // key: "Team1 v Team2 YYYY-MM-DD" -> {score1, score2, winner, status}
+let scoresVisible = false; // default: spoiler protection ON
 let activePhase = 'all';
 let searchText   = '';
 
@@ -711,8 +758,8 @@ function setSyncState(state) {
 // ─────────────────────────────────────────────
 // RENDERING
 // ─────────────────────────────────────────────
-const PHASE_LABELS = { group:'Group Stage', r32:'Round of 32', r16:'Round of 16', qf:'Quarterfinals', sf:'Semifinals', final:'Final' };
-const PHASE_ORDER  = ['group','r32','r16','qf','sf','final'];
+const PHASE_LABELS = { group:'Group Stage', r32:'Round of 32', r16:'Round of 16', qf:'Quarterfinals', sf:'Semifinals', '3rd':'3rd Place', final:'Final' };
+const PHASE_ORDER  = ['group','r32','r16','qf','sf','3rd','final'];
 
 function todayPDT() {
   const now = new Date();
@@ -882,6 +929,29 @@ document.getElementById('search').addEventListener('input', e => {
 // ─────────────────────────────────────────────
 // INIT + AUTO-REFRESH
 // ─────────────────────────────────────────────
+// ── SPOILER TOGGLE WIRING ──────────────────────────────
+const spoilerBtn = document.getElementById('spoiler-toggle');
+const stLabel    = document.getElementById('st-label');
+
+function applyScoreVisibility() {
+  if (scoresVisible) {
+    document.body.classList.add('show-scores');
+    spoilerBtn.classList.add('scores-on');
+    stLabel.textContent = 'Scores';
+  } else {
+    document.body.classList.remove('show-scores');
+    spoilerBtn.classList.remove('scores-on');
+    stLabel.textContent = 'Scores';
+  }
+}
+
+spoilerBtn.addEventListener('click', () => {
+  scoresVisible = !scoresVisible;
+  applyScoreVisibility();
+});
+
+applyScoreVisibility(); // set initial state (hidden)
+
 fetchScores();
 // Refresh every 5 minutes
 setInterval(fetchScores, 5 * 60 * 1000);
@@ -909,8 +979,8 @@ function openSheet(m) {
     `<span>${team1}</span><span class="sheet-vs">vs</span><span>${team2}</span>`;
 
   const sc = getScore(m);
-  const scoreStr = sc ? `Final: ${m.t1} ${sc.score1}–${sc.score2} ${m.t2} · ` : '';
-  metaTxt.textContent = scoreStr + m.pdt + ' PDT · ' + m.venue;
+  const scoreStr = sc ? `<span class="sheet-score">Final: ${m.t1} ${sc.score1}–${sc.score2} ${m.t2} · </span>` : '';
+  metaTxt.innerHTML = scoreStr + m.pdt + ' PDT · ' + m.venue;
 
   // Build action buttons
   const isFox = m.ch === 'FOX';
