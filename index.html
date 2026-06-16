@@ -75,44 +75,83 @@
 
   /* ── CONTROLS ── */
   .controls {
-    padding: 10px 16px;
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 8px 12px;
+    display: flex; gap: 8px; align-items: center;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     position: fixed;
     top: 49px; left: 0; right: 0;
     z-index: 40;
   }
-  .pill-group { display: flex; gap: 4px; flex-wrap: wrap; }
-  .pill {
+
+  /* Phase dropdown */
+  #phase-select {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px; font-weight: 600; letter-spacing: .3px;
-    padding: 5px 11px; border-radius: 99px;
+    font-size: 13px; font-weight: 600; letter-spacing: .3px;
+    padding: 6px 28px 6px 10px;
+    border-radius: var(--r);
     border: 1px solid var(--border2);
-    background: transparent; color: var(--muted);
-    cursor: pointer; transition: all .15s;
-    white-space: nowrap;
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    flex-shrink: 0;
+    transition: border-color .15s;
   }
-  .pill:hover { border-color: var(--accent); color: var(--text); }
-  .pill.active { background: var(--accent); border-color: var(--accent); color: #000; }
-  .pill.usa-pill.active { background: var(--usa); border-color: var(--usa); color: #000; }
-  .search-wrap { position: relative; flex: 1; min-width: 140px; max-width: 260px; }
-  .search-wrap input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-    border-radius: var(--r); padding: 6px 10px 6px 30px;
+  #phase-select:focus { border-color: var(--accent); }
+  #phase-select option { background: #1e242c; color: var(--text); }
+
+  /* Today button */
+  #today-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: .3px;
+    padding: 6px 11px; border-radius: var(--r);
+    border: 1px solid var(--border2);
+    background: var(--surface2); color: var(--muted);
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: all .15s;
+  }
+  #today-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Search icon button + expanding input */
+  .search-wrap {
+    position: relative; display: flex; align-items: center;
+    margin-left: auto;
+  }
+  #search-btn {
+    width: 32px; height: 32px; border-radius: var(--r);
+    border: 1px solid var(--border2); background: var(--surface2);
+    color: var(--muted); cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; transition: border-color .15s, color .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #search-btn:hover, #search-btn.active { border-color: var(--accent); color: var(--accent); }
+  #search-input {
+    position: absolute; right: 38px; top: 50%; transform: translateY(-50%);
+    width: 0; opacity: 0; pointer-events: none;
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: var(--r); padding: 6px 10px;
     color: var(--text); font-size: 13px; font-family: 'Barlow', sans-serif;
-    outline: none; transition: border-color .15s;
-  }
-  .search-wrap input:focus { border-color: var(--accent); }
-  .search-wrap input::placeholder { color: var(--muted); }
-  .search-icon {
-    position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
-    color: var(--muted); font-size: 13px; pointer-events: none;
-  }
-  .count-badge {
-    margin-left: auto; font-size: 11px; color: var(--muted);
-    font-family: 'Barlow Condensed', sans-serif; letter-spacing: .3px;
+    outline: none;
+    transition: width .22s cubic-bezier(.4,0,.2,1), opacity .18s, border-color .15s;
     white-space: nowrap;
+  }
+  #search-input.open {
+    width: 160px; opacity: 1; pointer-events: auto;
+  }
+  #search-input:focus { border-color: var(--accent); }
+  #search-input::placeholder { color: var(--muted); }
+
+  /* Count in header — remaining / total */
+  .count-badge {
+    font-size: 15px; font-weight: 600; color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif; letter-spacing: .3px;
+    white-space: nowrap; flex-shrink: 0;
   }
 
   /* ── MAIN ── */
@@ -644,19 +683,21 @@
 </header>
 
 <div class="controls">
-  <div class="pill-group" id="phase-pills">
-    <button class="pill active" data-phase="all">All</button>
-    <button class="pill" data-phase="r32">R32</button>
-    <button class="pill" data-phase="r16">R16</button>
-    <button class="pill" data-phase="qf">QF</button>
-    <button class="pill" data-phase="sf">SF</button>
-    <button class="pill" data-phase="3rd">3rd</button>
-    <button class="pill" data-phase="final">Final</button>
-    <button class="pill usa-pill" data-phase="usa">🇺🇸 USA</button>
-  </div>
+  <select id="phase-select" title="Filter by stage">
+    <option value="all">All Matches</option>
+    <option value="group">Group Stage</option>
+    <option value="r32">Round of 32</option>
+    <option value="r16">Round of 16</option>
+    <option value="qf">Quarterfinals</option>
+    <option value="sf">Semifinals</option>
+    <option value="3rd">3rd Place</option>
+    <option value="final">Final</option>
+    <option value="usa">🇺🇸 USA Games</option>
+  </select>
+  <button id="today-btn" title="Jump to today">Today</button>
   <div class="search-wrap">
-    <span class="search-icon">⌕</span>
-    <input type="search" id="search" placeholder="Team or city…" autocomplete="off" autocorrect="off">
+    <input type="search" id="search-input" placeholder="Team or city…" autocomplete="off" autocorrect="off">
+    <button id="search-btn" title="Search">⌕</button>
   </div>
   <div class="count-badge" id="count-badge"></div>
 </div>
@@ -768,6 +809,8 @@ const FIXTURES = [
   {id:'g_i3', phase:'group', group:'I', date:'2026-06-22', pdt:'2:00 pm',  t1:'France',              t2:'Iraq',                 venue:'Philadelphia',       ch:'FOX'},
   {id:'g_i4', phase:'group', group:'I', date:'2026-06-22', pdt:'5:00 pm',  t1:'Norway',              t2:'Senegal',              venue:'New York/NJ',        ch:'FOX'},
   {id:'g_j4', phase:'group', group:'J', date:'2026-06-22', pdt:'8:00 pm',  t1:'Jordan',              t2:'Algeria',              venue:'San Francisco Bay',  ch:'FS1'},
+  {id:'g_j5', phase:'group', group:'J', date:'2026-06-27', pdt:'7:00 pm',  t1:'Algeria',             t2:'Austria',              venue:'Kansas City',        ch:'FOX'},
+  {id:'g_j6', phase:'group', group:'J', date:'2026-06-27', pdt:'7:00 pm',  t1:'Jordan',              t2:'Argentina',            venue:'Dallas',             ch:'FS1'},
   {id:'g_k3', phase:'group', group:'K', date:'2026-06-23', pdt:'10:00 am', t1:'Portugal',            t2:'Uzbekistan',           venue:'Houston',            ch:'FOX'},
   {id:'g_l3', phase:'group', group:'L', date:'2026-06-23', pdt:'1:00 pm',  t1:'England',             t2:'Ghana',                venue:'Boston',             ch:'FOX'},
   {id:'g_l4', phase:'group', group:'L', date:'2026-06-23', pdt:'4:00 pm',  t1:'Panama',              t2:'Croatia',              venue:'Toronto',            ch:'FOX'},
@@ -1178,8 +1221,14 @@ function render() {
     return true;
   });
 
-  document.getElementById('count-badge').textContent =
-    filtered.length + ' match' + (filtered.length !== 1 ? 'es' : '');
+  // Always the full 104-match tournament totals
+  const allTotal  = FIXTURES.length;                          // 104
+  const allPlayed = FIXTURES.filter(m => getScore(m)).length; // scored = played
+  const allRemain = allTotal - allPlayed;
+  const pct       = Math.round((allPlayed / allTotal) * 100);
+  document.getElementById('count-badge').innerHTML =
+    `${allRemain}<span style="color:var(--muted);font-weight:400"> / ${allTotal}</span>`
+    + `<span style="color:var(--muted);font-size:12px;font-weight:400;margin-left:6px">${pct}% done</span>`;
 
   // Group by phase → date string (for stable sort)
   const byPhase = {};
@@ -1225,19 +1274,54 @@ function render() {
 // ─────────────────────────────────────────────
 // CONTROLS
 // ─────────────────────────────────────────────
-document.getElementById('phase-pills').addEventListener('click', e => {
-  const btn = e.target.closest('.pill');
-  if (!btn) return;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  activePhase = btn.dataset.phase;
-  hasAutoScrolled = false; // allow re-anchor when switching back to All
+// Phase dropdown
+document.getElementById('phase-select').addEventListener('change', e => {
+  activePhase = e.target.value;
+  hasAutoScrolled = false;
   render();
 });
 
-document.getElementById('search').addEventListener('input', e => {
+// Today button
+document.getElementById('today-btn').addEventListener('click', () => {
+  // Reset to All and scroll to today
+  const sel = document.getElementById('phase-select');
+  sel.value = 'all';
+  activePhase = 'all';
+  searchText = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-input').classList.remove('open');
+  document.getElementById('search-btn').classList.remove('active');
+  hasAutoScrolled = false;
+  render(); // re-render with cleared filters, scroll fires in render hook
+});
+
+// Search icon toggle + input
+const searchBtn   = document.getElementById('search-btn');
+const searchInput = document.getElementById('search-input');
+
+searchBtn.addEventListener('click', () => {
+  const isOpen = searchInput.classList.toggle('open');
+  searchBtn.classList.toggle('active', isOpen);
+  if (isOpen) {
+    searchInput.focus();
+  } else {
+    searchInput.value = '';
+    searchText = '';
+    render();
+  }
+});
+
+searchInput.addEventListener('input', e => {
   searchText = e.target.value;
   render();
+});
+
+// Close search on outside tap
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) {
+    searchInput.classList.remove('open');
+    searchBtn.classList.remove('active');
+  }
 });
 
 // ─────────────────────────────────────────────
