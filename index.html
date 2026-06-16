@@ -190,12 +190,11 @@
   /* Full-width date banner */
   .day-header {
     display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 4px 10px;
     margin-bottom: 0;
-    background: var(--surface2);
-    border-radius: 10px 10px 0 0;
-    padding: 15px 14px;
-    border: 1px solid var(--border2);
-    border-bottom: 1px solid var(--border2);
+    background: transparent;
+    border: none;
+    border-radius: 0;
   }
   /* Single-line date: "JUNE 16 (TUESDAY)" */
   .dh-line {
@@ -203,21 +202,21 @@
   }
   .dh-month {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 26px; font-weight: 700; letter-spacing: .5px;
+    font-size: 30px; font-weight: 700; letter-spacing: .5px;
     text-transform: uppercase; color: var(--text); line-height: 1;
   }
   .dh-date {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 26px; font-weight: 700; letter-spacing: .5px;
+    font-size: 30px; font-weight: 700; letter-spacing: .5px;
     color: var(--text); line-height: 1;
   }
   .dh-weekday {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 15px; font-weight: 500; letter-spacing: .3px;
+    font-size: 17px; font-weight: 500; letter-spacing: .3px;
     text-transform: uppercase; color: var(--muted); line-height: 1;
   }
   /* Today state */
-  .day-header.today { border-color: rgba(232,200,74,0.4); border-bottom-color: rgba(232,200,74,0.4); }
+  .day-header.today { /* no box — color-only state */ }
   .day-header.today .dh-date  { color: var(--accent); }
   .day-header.today .dh-month { color: var(--accent); }
   .day-header.today .dh-weekday { color: rgba(232,200,74,0.65); }
@@ -483,7 +482,9 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 380px) {
     .day-block { padding: 0 10px; }
-    .dh-date, .dh-month { font-size: 20px; }
+    .dh-date, .dh-month { font-size: 24px; }
+    .dh-weekday { font-size: 14px; }
+    .day-header { padding: 18px 2px 8px; }
     .dh-weekday { font-size: 13px; }
     .m-name { font-size: 16px; }
     .m-score-val { font-size: 20px; }
