@@ -189,44 +189,42 @@
 
   /* Full-width date banner */
   .day-header {
-    display: flex; align-items: center;
+    display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 0;
     background: var(--surface2);
     border-radius: 10px 10px 0 0;
-    padding: 10px 14px;
+    padding: 11px 14px;
     border: 1px solid var(--border2);
     border-bottom: 2px solid var(--border2);
   }
-  .dh-left {
-    display: flex; flex-direction: column; gap: 1px; flex: 1;
+  /* Single-line date: "JUNE 16 (TUESDAY)" */
+  .dh-line {
+    display: flex; align-items: baseline; gap: 6px; flex-wrap: nowrap;
   }
-  .day-header .dh-weekday {
+  .dh-month {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    font-size: 26px; font-weight: 700; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--text); line-height: 1;
+  }
+  .dh-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px; font-weight: 700; letter-spacing: .5px;
+    color: var(--text); line-height: 1;
+  }
+  .dh-weekday {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 500; letter-spacing: .3px;
     text-transform: uppercase; color: var(--muted); line-height: 1;
-  }
-  .dh-main {
-    display: flex; align-items: baseline; gap: 8px;
-  }
-  .day-header .dh-date {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 40px; font-weight: 700; letter-spacing: -1.5px;
-    color: var(--text); line-height: .95;
-  }
-  .day-header .dh-month {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 24px; font-weight: 600; color: var(--text);
-    text-transform: uppercase; letter-spacing: .3px; opacity: .55;
   }
   /* Today state */
   .day-header.today { border-color: rgba(232,200,74,0.4); border-bottom-color: rgba(232,200,74,0.4); }
   .day-header.today .dh-date  { color: var(--accent); }
-  .day-header.today .dh-month { color: var(--accent); opacity: .7; }
-  .day-header.today .dh-weekday { color: var(--accent); opacity: .9; }
+  .day-header.today .dh-month { color: var(--accent); }
+  .day-header.today .dh-weekday { color: rgba(232,200,74,0.65); }
   .today-chip {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
-    text-transform: uppercase;
+    text-transform: uppercase; white-space: nowrap;
     background: var(--accent); color: #000;
     padding: 3px 8px; border-radius: 4px;
   }
@@ -278,45 +276,65 @@
   .match.usa.live-now::before { background: var(--live); animation: live-bar 1.6s ease-in-out infinite; }
 
   /* ── MATCH BODY (left column) ── */
-  .m-body { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  .m-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 
-  /* Status pill row */
-  .m-status-row {
-    display: flex; align-items: center; gap: 7px;
-    margin-bottom: 1px;
+  /* ── TOP INFO ROW: time · state · group · venue — all on one line ── */
+  .m-info-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
+    overflow: hidden;
   }
-  /* State chip — ALWAYS visible regardless of score toggle */
+
+  /* State chip — always visible regardless of score toggle */
   .m-state {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 2px 8px; border-radius: 3px;
+    padding: 2px 7px; border-radius: 3px;
     display: inline-flex; align-items: center; gap: 4px;
     flex-shrink: 0;
   }
   .state-live     { background: var(--live); color: #fff; }
   .state-ft       { background: var(--surface2); color: var(--muted);
                     border: 1px solid rgba(255,255,255,0.15); }
-  .state-upcoming { background: transparent; color: var(--muted); }
+  .state-upcoming { display: none; } /* no chip for upcoming — cleaner */
 
-  /* USA tag — separate from state, shown alongside */
+  /* USA tag */
   .m-pill-usa {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; font-weight: 700; letter-spacing: .5px;
+    font-size: 11px; font-weight: 700; letter-spacing: .5px;
     padding: 2px 7px; border-radius: 3px;
     background: var(--usa); color: #000;
-    display: inline-flex; align-items: center;
+    display: inline-flex; align-items: center; flex-shrink: 0;
+  }
+
+  /* Kickoff time — larger, more prominent */
+  .m-kickoff {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 600; color: var(--text);
+    letter-spacing: .3px; flex-shrink: 0;
+  }
+  body.show-scores .match.finished .m-kickoff { text-decoration: line-through; opacity: .45; }
+
+  /* Separator dot between info items */
+  .m-sep {
+    color: var(--border2); font-size: 13px; flex-shrink: 0; line-height: 1;
+  }
+
+  /* Group label */
+  .m-group-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--muted);
     flex-shrink: 0;
   }
 
-  .m-kickoff {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px; font-weight: 500; color: var(--muted);
-    letter-spacing: .2px;
+  /* Venue — let it truncate if line gets too long */
+  .m-venue-tag {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 400; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    min-width: 0;
   }
-  /* kickoff strikethrough only when scores visible — time itself isn't a spoiler
-     but the strikethrough combined with dimming reveals the game is done */
-  body.show-scores .match.finished .m-kickoff { text-decoration: line-through; opacity: .5; }
 
   /* ── TEAM ROWS ── */
   .m-team-row {
@@ -325,12 +343,12 @@
   .m-flag { font-size: 20px; line-height: 1; width: 26px; text-align: center; flex-shrink: 0; }
   .m-name {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 19px; font-weight: 600; letter-spacing: .2px;
+    font-size: 20px; font-weight: 600; letter-spacing: .2px;
     color: var(--text); flex: 1; min-width: 0;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .m-name.tbd-name {
-    color: var(--muted); font-weight: 400; font-size: 15px;
+    color: var(--muted); font-weight: 400; font-size: 16px;
   }
   /* Score per team */
   .m-score-val {
@@ -344,22 +362,7 @@
 
   /* Divider between teams */
   .m-divider {
-    height: 1px; background: var(--border); margin: 1px 0 1px 34px;
-  }
-
-  /* Meta row: group + venue */
-  .m-meta {
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    margin-top: 1px;
-  }
-  .m-group-tag {
-    font-size: 10px; font-weight: 600; letter-spacing: .8px;
-    text-transform: uppercase; color: var(--muted);
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .m-venue-tag {
-    font-size: 11px; color: var(--muted);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    height: 1px; background: var(--border); margin: 2px 0 2px 34px;
   }
 
   /* ── MATCH RIGHT (channel) ── */
@@ -480,8 +483,8 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 380px) {
     .day-block { padding: 0 10px; }
-    .day-header .dh-date { font-size: 32px; }
-    .day-header .dh-month { font-size: 18px; }
+    .dh-date, .dh-month { font-size: 20px; }
+    .dh-weekday { font-size: 13px; }
     .m-name { font-size: 16px; }
     .m-score-val { font-size: 20px; }
     .match { padding: 10px 12px; }
@@ -848,7 +851,27 @@ let searchText   = '';
 // openfootball is manually maintained and lags by hours;
 // these ensure scores show immediately while we wait for the JSON to update.
 const KNOWN_RESULTS = [
-  { t1:'Mexico', t2:'South Africa', date:'2026-06-11', score1:2, score2:0 },
+  // Jun 11
+  { t1:'Mexico',       t2:'South Africa',         date:'2026-06-11', score1:2, score2:0 },
+  // Jun 12
+  { t1:'South Korea',  t2:'Czechia',               date:'2026-06-11', score1:2, score2:1 },
+  { t1:'Canada',       t2:'Bosnia and Herzegovina',date:'2026-06-12', score1:1, score2:1 },
+  // Jun 13 (PDT dates — games played Jun 12 ET are Jun 12 PDT)
+  { t1:'USA',          t2:'Paraguay',              date:'2026-06-12', score1:4, score2:1 },
+  { t1:'Qatar',        t2:'Switzerland',           date:'2026-06-13', score1:1, score2:1 },
+  { t1:'Brazil',       t2:'Morocco',               date:'2026-06-13', score1:1, score2:1 },
+  { t1:'Haiti',        t2:'Scotland',              date:'2026-06-13', score1:0, score2:1 },
+  { t1:'Australia',    t2:'Türkiye',               date:'2026-06-13', score1:2, score2:0 },
+  // Jun 14
+  { t1:'Germany',      t2:'Curaçao',               date:'2026-06-14', score1:7, score2:1 },
+  { t1:'Netherlands',  t2:'Japan',                 date:'2026-06-14', score1:2, score2:2 },
+  { t1:'Ivory Coast',  t2:'Ecuador',               date:'2026-06-14', score1:1, score2:0 },
+  { t1:'Tunisia',      t2:'Sweden',                date:'2026-06-14', score1:1, score2:5 },
+  // Jun 15
+  { t1:'Spain',        t2:'Cape Verde',            date:'2026-06-15', score1:0, score2:0 },
+  { t1:'Belgium',      t2:'Egypt',                 date:'2026-06-15', score1:1, score2:1 },
+  { t1:'Saudi Arabia', t2:'Uruguay',               date:'2026-06-15', score1:1, score2:1 },
+  { t1:'Iran',         t2:'New Zealand',           date:'2026-06-15', score1:2, score2:2 },
 ];
 
 function normalizeName(n) {
@@ -1033,18 +1056,16 @@ function todayPDT() {
 function dayHeaderHtml(dateStr) {
   const d = new Date(dateStr + 'T12:00:00');
   const isToday = dateStr === todayPDT();
-  const weekday = d.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+  const weekday = d.toLocaleDateString('en-US', { weekday: 'long' });
   const day   = d.getDate();
   const month = d.toLocaleDateString('en-US', { month: 'long' }).toUpperCase();
-  const cls = isToday ? ' today' : '';
+  const cls  = isToday ? ' today' : '';
   const chip = isToday ? '<span class="today-chip">Today</span>' : '';
   return `<div class="day-header${cls}">
-    <div class="dh-left">
-      <span class="dh-weekday">${weekday}</span>
-      <div class="dh-main">
-        <span class="dh-date">${day}</span>
-        <span class="dh-month">${month}</span>
-      </div>
+    <div class="dh-line">
+      <span class="dh-month">${month}</span>
+      <span class="dh-date">${day}</span>
+      <span class="dh-weekday">(${weekday})</span>
     </div>
     ${chip}
   </div>`;
@@ -1091,6 +1112,13 @@ function matchHtml(m) {
   const usaTag = m.usa ? `<span class="m-pill-usa">🇺🇸 USA</span>` : '';
 
   const kickoffHtml = `<span class="m-kickoff">${m.pdt} PDT</span>`;
+  const sep = '<span class="m-sep">·</span>';
+  const groupTagInline = m.group
+    ? `${sep}<span class="m-group-tag">Group ${m.group}</span>`
+    : '';
+  const venueTagInline = m.venue
+    ? `${sep}<span class="m-venue-tag">${m.venue}</span>`
+    : '';
 
   // Per-team score values
   const f1 = flag(m.t1), f2 = flag(m.t2);
@@ -1111,12 +1139,11 @@ function matchHtml(m) {
   const name1cls = isTBD && m.t1 === 'TBD' ? ' tbd-name' : '';
   const name2cls = isTBD && m.t2 === 'TBD' ? ' tbd-name' : '';
 
-  const groupTag  = m.group ? `<span class="m-group-tag">Group ${m.group}</span>` : '';
-  const venueTag  = `<span class="m-venue-tag">${m.venue}</span>`;
+  // groupTag and venueTag now inlined in m-info-row
 
   return `<div class="${cls}" data-id="${m.id}">
     <div class="m-body">
-      <div class="m-status-row">${stateChip}${usaTag}${kickoffHtml}</div>
+      <div class="m-info-row">${stateChip}${usaTag}${kickoffHtml}${groupTagInline}${venueTagInline}</div>
       <div class="m-team-row">
         ${flag1}
         <span class="m-name${name1cls}${name1ExtraCls}">${m.t1}</span>
@@ -1128,7 +1155,6 @@ function matchHtml(m) {
         <span class="m-name${name2cls}${name2ExtraCls}">${m.t2}</span>
         ${score2Html}
       </div>
-      <div class="m-meta">${groupTag}${groupTag && venueTag ? '<span style="color:var(--border2)">·</span>' : ''}${venueTag}</div>
     </div>
     <div class="m-right">
       <span class="m-ch ch-${m.ch}">${m.ch}</span>
@@ -1183,7 +1209,7 @@ function render() {
         </div>
       </div>`;
     Object.keys(byPhase[ph]).sort().forEach(date => {
-      html += `<div class="day-block">${dayHeaderHtml(date)}<div class="match-stack">`;
+      html += `<div class="day-block" data-date="${date}">${dayHeaderHtml(date)}<div class="match-stack">`;
       byPhase[ph][date].forEach(m => { html += matchHtml(m); });
       html += '</div></div>';
     });
@@ -1203,6 +1229,7 @@ document.getElementById('phase-pills').addEventListener('click', e => {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   activePhase = btn.dataset.phase;
+  hasAutoScrolled = false; // allow re-anchor when switching back to All
   render();
 });
 
@@ -1370,7 +1397,14 @@ function initStickyPhaseLabels() {
 const _origRender = render;
 render = function() {
   _origRender();
-  requestAnimationFrame(initStickyPhaseLabels);
+  requestAnimationFrame(() => {
+    initStickyPhaseLabels();
+    // Auto-scroll only on first render (page load / hard reload)
+    if (!hasAutoScrolled) {
+      hasAutoScrolled = true;
+      scrollToToday();
+    }
+  });
 };
 
 // ── DYNAMIC STICKY OFFSET ─────────────────────────────────────────────────────
@@ -1392,6 +1426,33 @@ function updateStickyOffset() {
 }
 updateStickyOffset();
 window.addEventListener('resize', updateStickyOffset);
+
+
+// ── SCROLL TO TODAY ───────────────────────────────────────────────────────────
+// On load and after render, scroll to the first day that is today or in the future.
+// Skips if the user has already scrolled (only runs on fresh load / filter reset).
+let hasAutoScrolled = false;
+
+function scrollToToday() {
+  const todayStr = todayPDT();
+  // Get all day blocks sorted by date
+  const blocks = Array.from(document.querySelectorAll('.day-block[data-date]'));
+  if (!blocks.length) return;
+
+  // Find first block whose date >= today
+  const target = blocks.find(b => b.dataset.date >= todayStr);
+  if (!target) return; // tournament is over — don't scroll
+
+  // Measure the fixed header height so we don't scroll under it
+  const hdr  = document.querySelector('header');
+  const ctrl = document.querySelector('.controls');
+  const offset = (hdr  ? hdr.getBoundingClientRect().height  : 49)
+               + (ctrl ? ctrl.getBoundingClientRect().height : 49)
+               + 8; // small breathing room
+
+  const top = target.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
 
 
 </script>
