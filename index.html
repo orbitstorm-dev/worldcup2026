@@ -127,7 +127,7 @@
     padding: 10px 16px 12px;
     background: linear-gradient(135deg, rgba(22,26,32,0.97) 0%, rgba(24,29,36,0.97) 100%);
     border: 1px solid rgba(232,200,74,0.22);
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
     display: flex; flex-direction: column; gap: 4px;
     position: -webkit-sticky; /* Safari */
     position: sticky;
@@ -185,7 +185,7 @@
   }
 
   /* ── DAY BLOCK ── */
-  .day-block { margin-bottom: 16px; padding: 0 14px; }
+  .day-block { margin-bottom: 20px; padding: 0 14px; }
 
   /* Full-width date banner */
   .day-header {
@@ -193,9 +193,9 @@
     margin-bottom: 0;
     background: var(--surface2);
     border-radius: 10px 10px 0 0;
-    padding: 11px 14px;
+    padding: 15px 14px;
     border: 1px solid var(--border2);
-    border-bottom: 2px solid var(--border2);
+    border-bottom: 1px solid var(--border2);
   }
   /* Single-line date: "JUNE 16 (TUESDAY)" */
   .dh-line {
@@ -230,25 +230,25 @@
   }
 
   /* Cards wrapper — matches share a bordered container */
+  /* match-stack is now just a spacing wrapper — no shared border */
   .match-stack {
-    border: 1px solid var(--border2);
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    overflow: hidden;
+    display: flex; flex-direction: column; gap: 12px;
+    padding-top: 8px;
   }
 
-  /* ── MATCH CARD ── */
+  /* ── MATCH CARD — each match is its own rounded card ── */
   .match {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0;
-    padding: 11px 14px;
+    padding: 13px 14px;
     background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
     transition: background .12s;
     position: relative;
+    overflow: hidden; /* keeps left-bar ::before clipped to border-radius */
   }
-  .match:last-child { border-bottom: none; }
   .match:hover { background: var(--surface2); }
 
   /* State: finished */
@@ -266,7 +266,7 @@
   @keyframes live-bar { 0%,100%{opacity:1} 50%{opacity:.25} }
 
   /* State: USA */
-  .match.usa { background: var(--usa-dim); opacity: 1; }
+  .match.usa { background: var(--usa-dim); border-color: var(--usa-border); opacity: 1; }
   .match.usa::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
     width: 3px; background: var(--usa);
@@ -276,7 +276,7 @@
   .match.usa.live-now::before { background: var(--live); animation: live-bar 1.6s ease-in-out infinite; }
 
   /* ── MATCH BODY (left column) ── */
-  .m-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .m-body { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
 
   /* ── TOP INFO ROW: time · state · group · venue — all on one line ── */
   .m-info-row {
@@ -362,7 +362,7 @@
 
   /* Divider between teams */
   .m-divider {
-    height: 1px; background: var(--border); margin: 2px 0 2px 34px;
+    height: 1px; background: var(--border); margin: 4px 0 4px 34px;
   }
 
   /* ── MATCH RIGHT (channel) ── */
@@ -487,7 +487,8 @@
     .dh-weekday { font-size: 13px; }
     .m-name { font-size: 16px; }
     .m-score-val { font-size: 20px; }
-    .match { padding: 10px 12px; }
+    .match-stack { gap: 5px; padding-top: 5px; }
+    .match { padding: 12px 11px; }
   }
 
 
