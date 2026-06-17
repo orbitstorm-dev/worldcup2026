@@ -400,6 +400,7 @@
   }
   .m-score-val.winner-score { color: #fff; }
   .m-score-val.loser-score  { color: var(--muted); font-weight: 400; }
+  .m-score-val.live-score   { color: var(--accent); }
 
   /* Divider between teams */
   .m-divider {
@@ -918,7 +919,7 @@ const KNOWN_RESULTS = [
   // Jun 16
   { t1:'France',       t2:'Senegal',   date:'2026-06-16', score1:3, score2:1 },
   { t1:'Iraq',         t2:'Norway',    date:'2026-06-16', score1:0, score2:2 },
-  { t1:'Argentina',    t2:'Algeria',   date:'2026-06-16', score1:2, score2:0 },
+  { t1:'Argentina',    t2:'Algeria',   date:'2026-06-16', score1:2, score2:0, live:true },
   // Jun 15
   { t1:'Spain',        t2:'Cape Verde',            date:'2026-06-15', score1:0, score2:0 },
   { t1:'Belgium',      t2:'Egypt',                 date:'2026-06-15', score1:1, score2:1 },
@@ -950,7 +951,8 @@ function applyKnownResults() {
                  : r.score2 > r.score1 ? normalizeName(r.t2) : null;
     // Only set if not already populated by a live fetch
     if (!scores[key]) {
-      scores[key] = { score1: r.score1, score2: r.score2, winner, status: 'FT' };
+      scores[key] = { score1: r.score1, score2: r.score2, winner,
+                      status: r.live ? 'LIVE' : 'FT', isLive: !!r.live };
     }
   });
 }
@@ -1139,7 +1141,9 @@ function parsePdtMins(pdtStr) {
 }
 
 function isLiveNow(m) {
-  if (getScore(m)) return false; // already has a result — not live
+  const sc = getScore(m);
+  if (sc && sc.isLive) return true;  // explicitly flagged as live in KNOWN_RESULTS
+  if (sc) return false;              // has a final score — not live
 
   // Convert current time to PDT by using a fixed -7h offset
   const nowUtcMs = Date.now();
@@ -1192,11 +1196,13 @@ function matchHtml(m) {
 
   let score1Html = '', score2Html = '', name1ExtraCls = '', name2ExtraCls = '';
   if (sc) {
-    const w1 = sc.winner === m.t1;
-    const w2 = sc.winner === m.t2;
-    score1Html = `<span class="m-score-val ${w1 ? 'winner-score' : 'loser-score'}">${sc.score1}</span>`;
-    score2Html = `<span class="m-score-val ${w2 ? 'winner-score' : 'loser-score'}">${sc.score2}</span>`;
-    // winner-name added to team name spans so CSS can suppress the highlight when scores hidden
+    const w1 = !sc.isLive && sc.winner === m.t1;
+    const w2 = !sc.isLive && sc.winner === m.t2;
+    // Live games: show score in accent gold, no winner/loser distinction yet
+    const s1cls = sc.isLive ? 'live-score' : w1 ? 'winner-score' : 'loser-score';
+    const s2cls = sc.isLive ? 'live-score' : w2 ? 'winner-score' : 'loser-score';
+    score1Html = `<span class="m-score-val ${s1cls}">${sc.score1}</span>`;
+    score2Html = `<span class="m-score-val ${s2cls}">${sc.score2}</span>`;
     if (w1) name1ExtraCls = ' winner-name';
     if (w2) name2ExtraCls = ' winner-name';
   }
@@ -1243,7 +1249,7 @@ function render() {
 
   // Always the full 104-match tournament totals
   const allTotal  = FIXTURES.length;                          // 104
-  const allPlayed = FIXTURES.filter(m => getScore(m)).length; // scored = played
+  const allPlayed = FIXTURES.filter(m => { const s = getScore(m); return s && !s.isLive; }).length;
   const allRemain = allTotal - allPlayed;
   const pct       = Math.round((allPlayed / allTotal) * 100);
   document.getElementById('count-badge').innerHTML =
