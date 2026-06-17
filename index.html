@@ -285,7 +285,10 @@
     border-radius: 10px;
     transition: background .12s;
     position: relative;
-    overflow: hidden; /* keeps left-bar ::before clipped to border-radius */
+    overflow: hidden;
+    /* Force GPU layer so overflow:hidden clips ::before on iOS WebKit */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   .match:hover { background: var(--surface2); }
 
@@ -294,7 +297,7 @@
   .match.finished:hover { opacity: 0.78; background: var(--surface2); }
 
   /* State: live */
-  .match.live-now { background: var(--live-dim); opacity: 1; }
+  .match.live-now { background: #2a1515; border-color: rgba(248,113,113,0.45); opacity: 1; }
   .match.live-now::before {
     content: '';
     position: absolute; left: 0; top: 0; bottom: 0;
@@ -304,7 +307,7 @@
   @keyframes live-bar { 0%,100%{opacity:1} 50%{opacity:.25} }
 
   /* State: USA */
-  .match.usa { background: var(--usa-dim); border-color: var(--usa-border); opacity: 1; }
+  .match.usa { background: #0d2018; border-color: var(--usa-border); opacity: 1; }
   .match.usa::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
     width: 3px; background: var(--usa);
@@ -912,6 +915,10 @@ const KNOWN_RESULTS = [
   { t1:'Netherlands',  t2:'Japan',                 date:'2026-06-14', score1:2, score2:2 },
   { t1:'Ivory Coast',  t2:'Ecuador',               date:'2026-06-14', score1:1, score2:0 },
   { t1:'Tunisia',      t2:'Sweden',                date:'2026-06-14', score1:1, score2:5 },
+  // Jun 16
+  { t1:'France',       t2:'Senegal',   date:'2026-06-16', score1:3, score2:1 },
+  { t1:'Iraq',         t2:'Norway',    date:'2026-06-16', score1:0, score2:2 },
+  { t1:'Argentina',    t2:'Algeria',   date:'2026-06-16', score1:2, score2:0 },
   // Jun 15
   { t1:'Spain',        t2:'Cape Verde',            date:'2026-06-15', score1:0, score2:0 },
   { t1:'Belgium',      t2:'Egypt',                 date:'2026-06-15', score1:1, score2:1 },
@@ -1121,19 +1128,32 @@ function getScore(m) {
   return scores[k] || null;
 }
 
+function parsePdtMins(pdtStr) {
+  // Parses "7:00 pm" -> minutes since midnight in PDT
+  const clean = pdtStr.replace(/ (am|pm)/i, '');
+  const [hr, min] = clean.split(':').map(Number);
+  const isPM = /pm/i.test(pdtStr) && hr !== 12;
+  const isAM = /am/i.test(pdtStr) && hr === 12; // 12:xx am = 0:xx
+  const h = isPM ? hr + 12 : isAM ? 0 : hr;
+  return h * 60 + (min || 0);
+}
+
 function isLiveNow(m) {
-  const now = new Date();
-  const pdtOffset = -7 * 60;
-  const nowPDT = new Date(now.getTime() + (now.getTimezoneOffset() + pdtOffset) * 60000);
-  const todayStr = nowPDT.toISOString().slice(0,10);
-  if (m.date !== todayStr) return false;
-  if (getScore(m)) return false;
-  const [hr, min] = m.pdt.replace(/ (am|pm)/,'').split(':').map(Number);
-  const isPM = m.pdt.includes('pm') && hr !== 12;
-  const kickoffH = isPM ? hr + 12 : hr;
-  const kickoffMins = kickoffH * 60 + min;
-  const nowMins = nowPDT.getHours() * 60 + nowPDT.getMinutes();
-  return nowMins >= kickoffMins && nowMins <= kickoffMins + 120;
+  if (getScore(m)) return false; // already has a result — not live
+
+  // Convert current time to PDT by using a fixed -7h offset
+  const nowUtcMs = Date.now();
+  const pdtOffsetMs = -7 * 60 * 60 * 1000;
+  const nowPDT = new Date(nowUtcMs + pdtOffsetMs);
+  const todayStr = nowPDT.toISOString().slice(0, 10); // YYYY-MM-DD in PDT
+
+  if (m.date !== todayStr) return false; // not today in PDT
+
+  const kickoffMins = parsePdtMins(m.pdt);
+  const nowMins = nowPDT.getUTCHours() * 60 + nowPDT.getUTCMinutes();
+
+  // Consider live from kickoff up to 115 mins after (standard match length)
+  return nowMins >= kickoffMins && nowMins <= kickoffMins + 115;
 }
 
 function matchHtml(m) {
