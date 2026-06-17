@@ -1101,10 +1101,10 @@ const PHASE_LABELS = { group:'Group Stage', r32:'Round of 32', r16:'Round of 16'
 const PHASE_ORDER  = ['group','r32','r16','qf','sf','3rd','final'];
 
 function todayPDT() {
-  const now = new Date();
-  const pdtOffset = -7 * 60;
-  const pdt = new Date(now.getTime() + (now.getTimezoneOffset() + pdtOffset) * 60000);
-  return pdt.toISOString().slice(0,10);
+  // Pure UTC math — not affected by device timezone setting
+  const pdtOffsetMs = -7 * 60 * 60 * 1000;
+  const pdt = new Date(Date.now() + pdtOffsetMs);
+  return pdt.toISOString().slice(0, 10);
 }
 
 function dayHeaderHtml(dateStr) {
@@ -1318,7 +1318,9 @@ document.getElementById('today-btn').addEventListener('click', () => {
   document.getElementById('search-input').classList.remove('open');
   document.getElementById('search-btn').classList.remove('active');
   hasAutoScrolled = false;
-  render(); // re-render with cleared filters, scroll fires in render hook
+  render();
+  // Scroll explicitly after two frames to ensure DOM is settled
+  requestAnimationFrame(() => requestAnimationFrame(scrollToToday));
 });
 
 // Search icon toggle + input
@@ -1509,12 +1511,13 @@ function initStickyPhaseLabels() {
 const _origRender = render;
 render = function() {
   _origRender();
+  // Double rAF: first frame lets browser apply new innerHTML to DOM,
+  // second frame ensures layout/paint is complete before we measure positions
   requestAnimationFrame(() => {
     initStickyPhaseLabels();
-    // Auto-scroll only on first render (page load / hard reload)
     if (!hasAutoScrolled) {
       hasAutoScrolled = true;
-      scrollToToday();
+      requestAnimationFrame(scrollToToday);
     }
   });
 };
@@ -1547,23 +1550,25 @@ let hasAutoScrolled = false;
 
 function scrollToToday() {
   const todayStr = todayPDT();
-  // Get all day blocks sorted by date
   const blocks = Array.from(document.querySelectorAll('.day-block[data-date]'));
   if (!blocks.length) return;
 
-  // Find first block whose date >= today
   const target = blocks.find(b => b.dataset.date >= todayStr);
-  if (!target) return; // tournament is over — don't scroll
+  if (!target) return;
 
-  // Measure the fixed header height so we don't scroll under it
+  // Use offsetTop (absolute doc position) not getBoundingClientRect (viewport-relative)
+  // Walk up offsetParent chain to get true document offset
+  let absTop = 0;
+  let el = target;
+  while (el) { absTop += el.offsetTop; el = el.offsetParent; }
+
   const hdr  = document.querySelector('header');
   const ctrl = document.querySelector('.controls');
   const offset = (hdr  ? hdr.getBoundingClientRect().height  : 49)
                + (ctrl ? ctrl.getBoundingClientRect().height : 49)
-               + 8; // small breathing room
+               + 12;
 
-  const top = target.getBoundingClientRect().top + window.scrollY - offset;
-  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  window.scrollTo({ top: Math.max(0, absTop - offset), behavior: 'smooth' });
 }
 
 
