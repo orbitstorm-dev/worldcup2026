@@ -1088,8 +1088,8 @@ const KNOWN_RESULTS = [
   { t1:'Bosnia and Herzegovina', t2:'Qatar',         date:'2026-06-24', score1:3, score2:1 },
   { t1:'Brazil',        t2:'Scotland',               date:'2026-06-24', score1:3, score2:0 },
   { t1:'Morocco',       t2:'Haiti',                  date:'2026-06-24', score1:4, score2:2 },
-  { t1:'Mexico',        t2:'Czechia',                date:'2026-06-24', score1:0, score2:0, live:true }, // halftime per live coverage
-  { t1:'South Korea',   t2:'South Africa',           date:'2026-06-24', score1:0, score2:0, live:true }, // halftime per live coverage
+  { t1:'Mexico',        t2:'Czechia',                date:'2026-06-24', score1:3, score2:0 },
+  { t1:'South Korea',   t2:'South Africa',           date:'2026-06-24', score1:0, score2:1 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1151,95 +1151,13 @@ function applyKnownResults() {
   });
 }
 
-// ── CLAUDE-POWERED SCORE FETCH ────────────────────────────────────────────────
-// Calls the Anthropic API with web search to get current WC scores.
-// Falls back to openfootball JSON, then to KNOWN_RESULTS.
-
-async function fetchScoresFromClaude() {
-  const btn = document.getElementById('fetch-btn');
-  const fetchLabel = document.getElementById('fetch-label');
-  btn.disabled = true;
-  btn.classList.add('fetching');
-  fetchLabel.textContent = 'Fetching…';
-  setSyncState('loading');
-  applyKnownResults();
-
-  // Build the list of fixtures that should have scores by now
-  const today = new Date();
-  const pdtOffset = -7 * 60;
-  const nowPDT = new Date(today.getTime() + (today.getTimezoneOffset() + pdtOffset) * 60000);
-  const todayStr = nowPDT.toISOString().slice(0,10);
-
-  const played = FIXTURES.filter(f =>
-    f.t1 !== 'TBD' && f.t2 !== 'TBD' && f.date <= todayStr
-  ).map(f => `${f.t1} vs ${f.t2} on ${f.date}`).join('\n');
-
-  const prompt = `You are a sports data assistant. Today is ${todayStr}.
-
-Search the web for FIFA World Cup 2026 results and return ONLY a JSON array of completed matches.
-Each object must have exactly these fields:
-  t1 (team 1 name), t2 (team 2 name), date (YYYY-MM-DD), score1 (integer), score2 (integer)
-
-Only include matches that have fully completed (Final Score / FT).
-Use the exact team names as listed:
-${played}
-
-Return ONLY valid JSON array, no markdown, no explanation. Example:
-[{"t1":"Mexico","t2":"South Africa","date":"2026-06-11","score1":2,"score2":0}]`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    if (!resp.ok) throw new Error('API error ' + resp.status);
-    const data = await resp.json();
-
-    // Extract text blocks (after tool use)
-    const text = data.content
-      .filter(b => b.type === 'text')
-      .map(b => b.text)
-      .join('');
-
-    // Parse JSON — strip any accidental markdown fences
-    const clean = text.replace(/```json|```/g, '').trim();
-    const results = JSON.parse(clean);
-
-    if (!Array.isArray(results)) throw new Error('Not an array');
-
-    let count = 0;
-    results.forEach(r => {
-      const t1 = normalizeName(r.t1);
-      const t2 = normalizeName(r.t2);
-      const key = scoreKey(t1, t2, r.date);
-      const winner = r.score1 > r.score2 ? t1 : r.score2 > r.score1 ? t2 : null;
-      scores[key] = { score1: r.score1, score2: r.score2, winner, status: 'FT' };
-      count++;
-    });
-
-    setSyncState('ok', count);
-    fetchLabel.textContent = `${count} result${count !== 1 ? 's' : ''} found`;
-    setTimeout(() => { fetchLabel.textContent = 'Fetch scores'; }, 4000);
-
-  } catch (e) {
-    console.warn('Claude fetch failed, trying openfootball…', e);
-    await fetchFromOpenfootball();
-  } finally {
-    btn.disabled = false;
-    btn.classList.remove('fetching');
-    render();
-  }
-}
+// ── OPENFOOTBALL SCORE FETCH ──────────────────────────────────────────────────
+// Free, no-API-key, community-maintained World Cup results JSON on GitHub.
+// This is the PRIMARY score source for both manual fetch and auto-refresh.
 
 async function fetchFromOpenfootball() {
   const OF_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+  const fetchLabel = document.getElementById('fetch-label');
   try {
     const res = await fetch(OF_URL + '?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1260,10 +1178,19 @@ async function fetchFromOpenfootball() {
       }
     });
     setSyncState('ok', count);
-    document.getElementById('fetch-label').textContent = 'Fetch scores';
+    if (fetchLabel) {
+      fetchLabel.textContent = `${count} result${count !== 1 ? 's' : ''} found`;
+      setTimeout(() => { fetchLabel.textContent = 'Fetch scores'; }, 4000);
+    }
+    return count;
   } catch (e) {
-    setSyncState('ok', 0);
-    document.getElementById('fetch-label').textContent = 'Fetch scores';
+    console.warn('openfootball fetch failed:', e);
+    setSyncState('error');
+    if (fetchLabel) {
+      fetchLabel.textContent = 'Offline';
+      setTimeout(() => { fetchLabel.textContent = 'Fetch scores'; }, 4000);
+    }
+    return 0;
   }
 }
 
@@ -1579,14 +1506,17 @@ render(); // render schedule immediately — scores fill in after fetch
 const fab = document.getElementById('refresh-fab');
 
 async function triggerFetch() {
-  // Header button: fetch scores only (no reload)
+  // Header button: fetch scores from openfootball (free, no API key needed)
   const btn = document.getElementById('fetch-btn');
   btn.disabled = true;
   btn.classList.add('fetching');
   document.getElementById('fetch-label').textContent = 'Fetching…';
-  await fetchScoresFromClaude();
+  setSyncState('loading');
+  applyKnownResults(); // always apply hardcoded floor first
+  await fetchFromOpenfootball();
   btn.disabled = false;
   btn.classList.remove('fetching');
+  render();
 }
 
 function triggerReload() {
