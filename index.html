@@ -1090,6 +1090,13 @@ const KNOWN_RESULTS = [
   { t1:'Morocco',       t2:'Haiti',                  date:'2026-06-24', score1:4, score2:2 },
   { t1:'Mexico',        t2:'Czechia',                date:'2026-06-24', score1:3, score2:0 },
   { t1:'South Korea',   t2:'South Africa',           date:'2026-06-24', score1:0, score2:1 },
+  // ── Jun 25 (matchday 3 — group stage finale) ──
+  { t1:'Ecuador',       t2:'Germany',               date:'2026-06-25', score1:2, score2:1 },
+  { t1:'Curaçao',       t2:'Ivory Coast',           date:'2026-06-25', score1:0, score2:2 },
+  { t1:'Tunisia',       t2:'Netherlands',           date:'2026-06-25', score1:1, score2:3 },
+  { t1:'Japan',         t2:'Sweden',                date:'2026-06-25', score1:1, score2:1 },
+  { t1:'USA',           t2:'Türkiye',               date:'2026-06-25', score1:2, score2:3 },
+  { t1:'Paraguay',      t2:'Australia',             date:'2026-06-25', score1:0, score2:0 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1135,18 +1142,28 @@ function normalizeName(n) {
 }
 
 function scoreKey(t1, t2, date) {
-  return `${normalizeName(t1)} v ${normalizeName(t2)} ${date}`;
+  // Sort team names alphabetically so the key is ORDER-INDEPENDENT.
+  // Different data sources (openfootball, manual KNOWN_RESULTS, etc.) don't
+  // always list home/away in the same order as our FIXTURES — without this,
+  // a correctly-fetched score can silently fail to match its fixture.
+  const n1 = normalizeName(t1);
+  const n2 = normalizeName(t2);
+  const [a, b] = [n1, n2].sort();
+  return `${a} v ${b} ${date}`;
 }
 
 function applyKnownResults() {
   KNOWN_RESULTS.forEach(r => {
-    const key = scoreKey(r.t1, r.t2, r.date);
-    const winner = r.score1 > r.score2 ? normalizeName(r.t1)
-                 : r.score2 > r.score1 ? normalizeName(r.t2) : null;
-    // Only set if not already populated by a live fetch
+    const n1 = normalizeName(r.t1);
+    const n2 = normalizeName(r.t2);
+    const key = scoreKey(n1, n2, r.date);
+    const winner = r.score1 > r.score2 ? n1 : r.score2 > r.score1 ? n2 : null;
+    // Only set if not already populated by a live fetch.
+    // Store team1/team2 NAMES alongside scores so getScore() can correctly
+    // re-orient them regardless of which order this source listed the teams in.
     if (!scores[key]) {
-      scores[key] = { score1: r.score1, score2: r.score2, winner,
-                      status: r.live ? 'LIVE' : 'FT', isLive: !!r.live };
+      scores[key] = { team1: n1, team2: n2, score1: r.score1, score2: r.score2,
+                      winner, status: r.live ? 'LIVE' : 'FT', isLive: !!r.live };
     }
   });
 }
@@ -1173,7 +1190,7 @@ async function fetchFromOpenfootball() {
       const ft = s.ft || s.score || null;
       if (ft && Array.isArray(ft) && ft.length === 2) {
         const winner = ft[0] > ft[1] ? t1 : ft[1] > ft[0] ? t2 : null;
-        scores[key] = { score1: ft[0], score2: ft[1], winner, status: 'FT' };
+        scores[key] = { team1: t1, team2: t2, score1: ft[0], score2: ft[1], winner, status: 'FT' };
         count++;
       }
     });
@@ -1248,7 +1265,21 @@ function dayHeaderHtml(dateStr) {
 
 function getScore(m) {
   const k = scoreKey(m.t1, m.t2, m.date);
-  return scores[k] || null;
+  const raw = scores[k];
+  if (!raw) return null;
+
+  // The stored object's score1/score2 correspond to ITS OWN team1/team2 order,
+  // which may be reversed relative to this fixture's m.t1/m.t2. Re-orient so
+  // the returned score1 ALWAYS corresponds to m.t1 and score2 to m.t2.
+  const fixtureT1 = normalizeName(m.t1);
+  if (raw.team1 && raw.team2 && raw.team1 !== fixtureT1) {
+    return {
+      ...raw,
+      score1: raw.score2,
+      score2: raw.score1,
+    };
+  }
+  return raw;
 }
 
 function parsePdtMins(pdtStr) {
