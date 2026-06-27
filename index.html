@@ -1438,8 +1438,13 @@ function render() {
         </div>
       </div>`;
     Object.keys(byPhase[ph]).sort().forEach(date => {
+      // Sort this day's matches chronologically by actual kickoff time —
+      // array insertion order in FIXTURES is not guaranteed to match kickoff order.
+      const dayMatches = byPhase[ph][date].slice().sort(
+        (a, b) => parsePdtMins(a.pdt) - parsePdtMins(b.pdt)
+      );
       html += `<div class="day-block" data-date="${date}">${dayHeaderHtml(date)}<div class="match-stack">`;
-      byPhase[ph][date].forEach(m => { html += matchHtml(m); });
+      dayMatches.forEach(m => { html += matchHtml(m); });
       html += '</div></div>';
     });
     html += '</div>';
