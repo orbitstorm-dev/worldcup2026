@@ -1558,6 +1558,11 @@ async function triggerFetch() {
 function triggerReload() {
   // FAB: hard reload the page so GitHub Pages serves latest code,
   // then scores are fetched fresh automatically on startup.
+  // Persist which view we're in so the reload doesn't kick the user
+  // back to the schedule view if they were looking at the bracket.
+  try {
+    localStorage.setItem('wc2026_view', bracketOpen ? 'bracket' : 'schedule');
+  } catch (e) { /* localStorage unavailable — reload will just default to schedule */ }
   fab.disabled = true;
   fab.classList.add('fetching');
   // Brief spin so user sees feedback before reload
@@ -1889,15 +1894,18 @@ function renderBracket() {
   document.getElementById('bracket-view').innerHTML = html;
 }
 
-document.getElementById('bracket-btn').addEventListener('click', () => {
-  bracketOpen = !bracketOpen;
+function setBracketView(open, opts) {
+  opts = opts || {};
+  bracketOpen = open;
   const btn = document.getElementById('bracket-btn');
   const view = document.getElementById('bracket-view');
   const mainEl = document.getElementById('main');
 
   // Always reset scroll to top when switching views, so neither view
   // opens already scrolled partway down (or up) from the previous view.
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (!opts.skipScrollReset) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
 
   btn.classList.toggle('active', bracketOpen);
   view.classList.toggle('open', bracketOpen);
@@ -1908,13 +1916,31 @@ document.getElementById('bracket-btn').addEventListener('click', () => {
     // Reset bracket's own horizontal scroll to the start (R32 column)
     requestAnimationFrame(() => {
       view.scrollLeft = 0;
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      if (!opts.skipScrollReset) window.scrollTo({ top: 0, behavior: 'instant' });
     });
   } else {
     hasAutoScrolled = false; // re-anchor schedule view to today when switching back
     render();
   }
+}
+
+document.getElementById('bracket-btn').addEventListener('click', () => {
+  setBracketView(!bracketOpen);
 });
+
+// ── RESTORE VIEW AFTER RELOAD ─────────────────────────────────────────────────
+// If the FAB reload preserved a "bracket" preference in localStorage, restore
+// that view automatically instead of always landing back on the schedule.
+(function restoreViewFromReload() {
+  try {
+    const savedView = localStorage.getItem('wc2026_view');
+    if (savedView === 'bracket') {
+      setBracketView(true, { skipScrollReset: true });
+    }
+    // Clear it so a manual refresh/normal visit later doesn't get stuck on bracket
+    localStorage.removeItem('wc2026_view');
+  } catch (e) { /* localStorage unavailable — just stay on default schedule view */ }
+})();
 
 
 </script>
