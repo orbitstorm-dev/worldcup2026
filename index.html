@@ -122,9 +122,21 @@
   }
   .bracket-score.hidden-score { visibility: hidden; }
   .bracket-meta {
-    font-size: 9px; color: var(--muted); text-align: center;
-    margin-top: 1px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 500; color: var(--muted); text-align: center;
+    margin-top: 4px; padding-top: 4px;
+    border-top: 1px solid var(--border);
+    font-family: 'Barlow Condensed', sans-serif;
     letter-spacing: .3px; white-space: nowrap;
+    line-height: 1.4;
+  }
+  .bracket-meta .bm-date {
+    color: var(--text); font-weight: 600;
+  }
+  .bracket-meta .bm-time {
+    color: var(--muted);
+  }
+  .bracket-meta .bm-live {
+    color: var(--live); font-weight: 700;
   }
   .bracket-divider { height: 1px; background: var(--border); }
 
@@ -957,21 +969,20 @@ const FIXTURES = [
   {id:'g_k6', phase:'group', group:'K', date:'2026-06-27', pdt:'4:30 pm',  t1:'Congo DR',            t2:'Uzbekistan',           venue:'Atlanta',            ch:'FS1'},
   // ROUND OF 32 — Jun 28–Jul 3
   {id:'r32_1',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'South Africa',        t2:'Canada',               venue:'Los Angeles',        ch:'FOX'},
-  {id:'r32_2',  phase:'r32', date:'2026-06-29', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',             ch:'FOX'},
-  {id:'r32_3',  phase:'r32', date:'2026-06-29', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Monterrey',          ch:'FS1'},
+  {id:'r32_2',  phase:'r32', date:'2026-06-29', pdt:'1:00 pm',  t1:'Germany',             t2:'Paraguay',             venue:'Boston',             ch:'FOX'},
   {id:'r32_4',  phase:'r32', date:'2026-06-29', pdt:'10:00 am', t1:'Brazil',              t2:'Japan',                venue:'Houston',            ch:'FS1'},
-  {id:'r32_5',  phase:'r32', date:'2026-06-30', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',        ch:'FOX'},
-  {id:'r32_6',  phase:'r32', date:'2026-06-30', pdt:'10:00 am', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
-  {id:'r32_7',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Netherlands',         t2:'Morocco',              venue:'Mexico City',        ch:'FS1'},
-  {id:'r32_8',  phase:'r32', date:'2026-07-01', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FOX'},
+  {id:'r32_5',  phase:'r32', date:'2026-06-30', pdt:'2:00 pm',  t1:'France',              t2:'Sweden',               venue:'New York/NJ',        ch:'FOX'},
+  {id:'r32_6',  phase:'r32', date:'2026-06-30', pdt:'10:00 am', t1:'Ivory Coast',         t2:'Norway',               venue:'Dallas',             ch:'FOX'},
+  {id:'r32_7',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Netherlands',         t2:'Morocco',              venue:'Monterrey',          ch:'FS1'},
+  {id:'r32_8',  phase:'r32', date:'2026-07-01', pdt:'9:00 am',  t1:'England',             t2:'Congo DR',             venue:'Atlanta',            ch:'FOX'},
   {id:'r32_9',  phase:'r32', date:'2026-07-01', pdt:'5:00 pm',  t1:'USA',                 t2:'Bosnia and Herzegovina', venue:'San Francisco Bay',  ch:'FS1', usa:true},
-  {id:'r32_10', phase:'r32', date:'2026-07-01', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',          ch:'FOX'},
-  {id:'r32_11', phase:'r32', date:'2026-07-02', pdt:'4:00 pm',  t1:'TBD', t2:'TBD', venue:'Toronto',            ch:'FS1'},
-  {id:'r32_12', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',        ch:'FOX'},
-  {id:'r32_13', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',          ch:'FS1'},
-  {id:'r32_14', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
-  {id:'r32_15', phase:'r32', date:'2026-07-03', pdt:'6:30 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',        ch:'FS1'},
-  {id:'r32_16', phase:'r32', date:'2026-07-03', pdt:'11:00 am', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
+  {id:'r32_10', phase:'r32', date:'2026-07-01', pdt:'1:00 pm',  t1:'Belgium',             t2:'Senegal',              venue:'Seattle ⭐',          ch:'FOX'},
+  {id:'r32_11', phase:'r32', date:'2026-07-02', pdt:'4:00 pm',  t1:'Portugal',            t2:'Croatia',              venue:'Toronto',            ch:'FS1'},
+  {id:'r32_12', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'Spain', t2:'Austria', venue:'Los Angeles',        ch:'FOX'},
+  {id:'r32_13', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'Switzerland',         t2:'Iran',                 venue:'Vancouver',          ch:'FS1'},
+  {id:'r32_14', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'Argentina',           t2:'Cape Verde',           venue:'Miami',              ch:'FOX'},
+  {id:'r32_15', phase:'r32', date:'2026-07-03', pdt:'6:30 pm',  t1:'Colombia',            t2:'Ghana',                venue:'Kansas City',        ch:'FS1'},
+  {id:'r32_16', phase:'r32', date:'2026-07-03', pdt:'11:00 am', t1:'Australia',           t2:'Egypt',                venue:'Dallas',             ch:'FOX'},
   // ROUND OF 16 — Jul 4–7
   {id:'r16_1', phase:'r16', date:'2026-07-04', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Philadelphia',       ch:'FOX'},
   {id:'r16_2', phase:'r16', date:'2026-07-04', pdt:'10:00 am', t1:'TBD', t2:'TBD', venue:'Houston',            ch:'FOX'},
@@ -1097,6 +1108,13 @@ const KNOWN_RESULTS = [
   { t1:'Japan',         t2:'Sweden',                date:'2026-06-25', score1:1, score2:1 },
   { t1:'USA',           t2:'Türkiye',               date:'2026-06-25', score1:2, score2:3 },
   { t1:'Paraguay',      t2:'Australia',             date:'2026-06-25', score1:0, score2:0 },
+  // ── Jun 27 (final day of group stage) ──
+  { t1:'Panama',        t2:'England',               date:'2026-06-27', score1:0, score2:2 },
+  { t1:'Croatia',       t2:'Ghana',                 date:'2026-06-27', score1:2, score2:1 },
+  { t1:'Colombia',      t2:'Portugal',              date:'2026-06-27', score1:0, score2:0 },
+  { t1:'Congo DR',      t2:'Uzbekistan',            date:'2026-06-27', score1:3, score2:1 },
+  { t1:'Jordan',        t2:'Argentina',             date:'2026-06-27', score1:1, score2:3 },
+  { t1:'Algeria',       t2:'Austria',               date:'2026-06-27', score1:3, score2:3 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1743,7 +1761,7 @@ let bracketOpen = false;
 
 // Layout constants (px)
 const BR_CARD_W    = 200;
-const BR_CARD_H    = 64;
+const BR_CARD_H    = 76;
 const BR_COL_GAP   = 64;   // horizontal gap between columns (for connector lines)
 const BR_ROW_GAP   = 36;   // vertical gap between R32 cards (base round) — generous breathing room
 const BR_TITLE_GAP = 40;   // space reserved above column 0 for the round title
@@ -1771,16 +1789,20 @@ function bracketMatchHtml(m, x, y) {
   if (live) cls += ' live';
   if (m.usa) cls += ' usa-match';
 
-  const dateShort = m.t1 !== 'TBD'
-    ? new Date(m.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    : '';
-  const meta = m.t1 !== 'TBD' ? `${dateShort} · ${m.pdt} PDT` : 'TBD';
+  let metaHtml;
+  if (m.t1 === 'TBD') {
+    metaHtml = `<span class="bm-date">TBD</span>`;
+  } else {
+    const dateShort = new Date(m.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const liveTag = live ? `<span class="bm-live">● LIVE</span> · ` : '';
+    metaHtml = `${liveTag}<span class="bm-date">${dateShort}</span> · <span class="bm-time">${m.pdt} PDT</span>`;
+  }
 
   return `<div class="${cls}" style="left:${x}px; top:${y}px; width:${BR_CARD_W}px;">
     ${bracketTeamHtml(m.t1, sc, true)}
     <div class="bracket-divider"></div>
     ${bracketTeamHtml(m.t2, sc, false)}
-    <div class="bracket-meta">${live ? '● LIVE · ' : ''}${meta}</div>
+    <div class="bracket-meta">${metaHtml}</div>
   </div>`;
 }
 
