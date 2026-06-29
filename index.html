@@ -968,30 +968,34 @@ const FIXTURES = [
   {id:'g_k5', phase:'group', group:'K', date:'2026-06-27', pdt:'4:30 pm',  t1:'Colombia',            t2:'Portugal',             venue:'Miami',               ch:'FOX'},
   {id:'g_k6', phase:'group', group:'K', date:'2026-06-27', pdt:'4:30 pm',  t1:'Congo DR',            t2:'Uzbekistan',           venue:'Atlanta',            ch:'FS1'},
   // ROUND OF 32 — Jun 28–Jul 3
-  {id:'r32_1',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'South Africa',        t2:'Canada',               venue:'Los Angeles',        ch:'FOX'},
-  {id:'r32_2',  phase:'r32', date:'2026-06-29', pdt:'1:00 pm',  t1:'Germany',             t2:'Paraguay',             venue:'Boston',             ch:'FOX'},
-  {id:'r32_3',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Mexico',              t2:'Ecuador',              venue:'Mexico City',        ch:'FS1'},
-  {id:'r32_4',  phase:'r32', date:'2026-06-29', pdt:'10:00 am', t1:'Brazil',              t2:'Japan',                venue:'Houston',            ch:'FS1'},
-  {id:'r32_5',  phase:'r32', date:'2026-06-30', pdt:'2:00 pm',  t1:'France',              t2:'Sweden',               venue:'New York/NJ',        ch:'FOX'},
+  // Ordered so consecutive pairs (0,1)(2,3)(4,5)... are genuine bracket partners
+  // feeding the same R16 slot below, in the SAME order. This ordering is
+  // REQUIRED for the bracket view's centering math — do not reorder one array
+  // without updating the other to match.
+  {id:'r32_1',  phase:'r32', date:'2026-06-29', pdt:'1:00 pm',  t1:'Germany',             t2:'Paraguay',             venue:'Boston',             ch:'FOX'},
+  {id:'r32_2',  phase:'r32', date:'2026-06-30', pdt:'2:00 pm',  t1:'France',              t2:'Sweden',               venue:'New York/NJ',        ch:'FOX'},
+  {id:'r32_3',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'South Africa',        t2:'Canada',               venue:'Los Angeles',        ch:'FOX'},
+  {id:'r32_4',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Netherlands',         t2:'Morocco',              venue:'Monterrey',          ch:'FS1'},
+  {id:'r32_5',  phase:'r32', date:'2026-06-29', pdt:'10:00 am', t1:'Brazil',              t2:'Japan',                venue:'Houston',            ch:'FS1'},
   {id:'r32_6',  phase:'r32', date:'2026-06-30', pdt:'10:00 am', t1:'Ivory Coast',         t2:'Norway',               venue:'Dallas',             ch:'FOX'},
-  {id:'r32_7',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Netherlands',         t2:'Morocco',              venue:'Monterrey',          ch:'FS1'},
+  {id:'r32_7',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Mexico',              t2:'Ecuador',              venue:'Mexico City',        ch:'FS1'},
   {id:'r32_8',  phase:'r32', date:'2026-07-01', pdt:'9:00 am',  t1:'England',             t2:'Congo DR',             venue:'Atlanta',            ch:'FOX'},
-  {id:'r32_9',  phase:'r32', date:'2026-07-01', pdt:'5:00 pm',  t1:'USA',                 t2:'Bosnia and Herzegovina', venue:'San Francisco Bay',  ch:'FS1', usa:true},
-  {id:'r32_10', phase:'r32', date:'2026-07-01', pdt:'1:00 pm',  t1:'Belgium',             t2:'Senegal',              venue:'Seattle ⭐',          ch:'FOX'},
-  {id:'r32_11', phase:'r32', date:'2026-07-02', pdt:'4:00 pm',  t1:'Portugal',            t2:'Croatia',              venue:'Toronto',            ch:'FS1'},
-  {id:'r32_12', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'Spain', t2:'Austria', venue:'Los Angeles',        ch:'FOX'},
-  {id:'r32_13', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'Switzerland',         t2:'Algeria',              venue:'Vancouver',          ch:'FS1'},
-  {id:'r32_14', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'Argentina',           t2:'Cape Verde',           venue:'Miami',              ch:'FOX'},
-  {id:'r32_15', phase:'r32', date:'2026-07-03', pdt:'6:30 pm',  t1:'Colombia',            t2:'Ghana',                venue:'Kansas City',        ch:'FS1'},
-  {id:'r32_16', phase:'r32', date:'2026-07-03', pdt:'11:00 am', t1:'Australia',           t2:'Egypt',                venue:'Dallas',             ch:'FOX'},
-  // ROUND OF 16 — Jul 4–7
+  {id:'r32_9',  phase:'r32', date:'2026-07-02', pdt:'4:00 pm',  t1:'Portugal',            t2:'Croatia',              venue:'Toronto',            ch:'FS1'},
+  {id:'r32_10', phase:'r32', date:'2026-07-02', pdt:'12:00 pm', t1:'Spain', t2:'Austria', venue:'Los Angeles',        ch:'FOX'},
+  {id:'r32_11', phase:'r32', date:'2026-07-01', pdt:'5:00 pm',  t1:'USA',                 t2:'Bosnia and Herzegovina', venue:'San Francisco Bay',  ch:'FS1', usa:true},
+  {id:'r32_12', phase:'r32', date:'2026-07-01', pdt:'1:00 pm',  t1:'Belgium',             t2:'Senegal',              venue:'Seattle ⭐',          ch:'FOX'},
+  {id:'r32_13', phase:'r32', date:'2026-07-03', pdt:'3:00 pm',  t1:'Argentina',           t2:'Cape Verde',           venue:'Miami',              ch:'FOX'},
+  {id:'r32_14', phase:'r32', date:'2026-07-03', pdt:'11:00 am', t1:'Australia',           t2:'Egypt',                venue:'Dallas',             ch:'FOX'},
+  {id:'r32_15', phase:'r32', date:'2026-07-02', pdt:'6:00 pm',  t1:'Switzerland',         t2:'Algeria',              venue:'Vancouver',          ch:'FS1'},
+  {id:'r32_16', phase:'r32', date:'2026-07-03', pdt:'6:30 pm',  t1:'Colombia',            t2:'Ghana',                venue:'Kansas City',        ch:'FS1'},
+  // ROUND OF 16 — Jul 4–7 (pairs match R32 array order above: r16_1 = r32_1+r32_2, etc.)
   {id:'r16_1', phase:'r16', date:'2026-07-04', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Philadelphia',       ch:'FOX'},
   {id:'r16_2', phase:'r16', date:'2026-07-04', pdt:'10:00 am', t1:'Canada', t2:'TBD', venue:'Houston',            ch:'FOX'},
   {id:'r16_3', phase:'r16', date:'2026-07-05', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',        ch:'FOX'},
   {id:'r16_4', phase:'r16', date:'2026-07-05', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Mexico City',        ch:'FS1'},
   {id:'r16_5', phase:'r16', date:'2026-07-06', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
   {id:'r16_6', phase:'r16', date:'2026-07-06', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Seattle ⭐',          ch:'FOX'},
-  {id:'r16_7', phase:'r16', date:'2026-07-06', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FS1'},
+  {id:'r16_7', phase:'r16', date:'2026-07-07', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FS1'},
   {id:'r16_8', phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',          ch:'FOX'},
   // QUARTERFINALS — Jul 9–11
   {id:'qf_1', phase:'qf', date:'2026-07-09', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',              ch:'FOX'},
@@ -1083,6 +1087,8 @@ const KNOWN_RESULTS = [
   { t1:'Netherlands',   t2:'Sweden',                date:'2026-06-20', score1:5, score2:1 },
   { t1:'Germany',       t2:'Ivory Coast',           date:'2026-06-20', score1:2, score2:1 },
   { t1:'Ecuador',       t2:'Curaçao',               date:'2026-06-20', score1:0, score2:0 },
+  // ── Jun 21 ──
+  { t1:'Tunisia',       t2:'Japan',                 date:'2026-06-21', score1:0, score2:4 },
   // ── Jun 22 ──
   { t1:'Argentina',     t2:'Austria',               date:'2026-06-22', score1:2, score2:0 },
   { t1:'France',        t2:'Iraq',                  date:'2026-06-22', score1:3, score2:0 },
