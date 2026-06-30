@@ -1836,7 +1836,7 @@ let bracketOpen = false;
 const BR_CARD_W    = 200;
 const BR_CARD_H    = 76;
 const BR_COL_GAP   = 64;   // horizontal gap between columns (for connector lines)
-const BR_ROW_GAP   = 36;   // vertical gap between R32 cards (base round) — generous breathing room
+const BR_ROW_GAP   = 52;   // vertical gap between R32 cards (base round) — generous breathing room
 const BR_TITLE_GAP = 40;   // space reserved above column 0 for the round title
 
 function bracketTeamHtml(name, sc, isT1) {
@@ -2039,7 +2039,6 @@ document.getElementById('bracket-btn').addEventListener('click', () => {
     localStorage.removeItem('wc2026_view');
   } catch (e) { /* localStorage unavailable — just stay on default schedule view */ }
 })();
-
 
 
 </script>
