@@ -1024,7 +1024,7 @@ const FIXTURES = [
   {id:'r32_16', phase:'r32', date:'2026-07-03', pdt:'6:30 pm',  t1:'Colombia',            t2:'Ghana',                venue:'Kansas City',        ch:'FS1'},
   // ROUND OF 16 — Jul 4–7 (pairs match R32 array order above: r16_1 = r32_1+r32_2, etc.)
   {id:'r16_1', phase:'r16', date:'2026-07-04', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Philadelphia',       ch:'FOX'},
-  {id:'r16_2', phase:'r16', date:'2026-07-04', pdt:'10:00 am', t1:'Canada', t2:'TBD', venue:'Houston',            ch:'FOX'},
+  {id:'r16_2', phase:'r16', date:'2026-07-04', pdt:'10:00 am', t1:'Canada', t2:'Morocco', venue:'Houston',            ch:'FOX'},
   {id:'r16_3', phase:'r16', date:'2026-07-05', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'New York/NJ',        ch:'FOX'},
   {id:'r16_4', phase:'r16', date:'2026-07-05', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Mexico City',        ch:'FS1'},
   {id:'r16_5', phase:'r16', date:'2026-07-06', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',             ch:'FOX'},
@@ -1174,7 +1174,8 @@ const KNOWN_RESULTS = [
   { t1:'Brazil',        t2:'Japan',                  date:'2026-06-29', score1:2, score2:1 },
   // Germany 1-1 Paraguay after extra time; Paraguay won 4-3 on penalties (Germany's first-ever WC penalty shootout loss)
   { t1:'Germany',       t2:'Paraguay',                date:'2026-06-29', score1:1, score2:1, winnerOverride:'Paraguay' },
-  { t1:'Netherlands',   t2:'Morocco',                 date:'2026-06-29', score1:1, score2:1, live:true }, // 1-1 after 90, Diop equalized 90+1', now in extra time
+  // Netherlands 1-1 Morocco after extra time (2-2 in ET); Morocco won on penalties (Saibari's winning spot-kick)
+  { t1:'Netherlands',   t2:'Morocco',                 date:'2026-06-29', score1:1, score2:1, winnerOverride:'Morocco' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
