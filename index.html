@@ -975,7 +975,7 @@ const FIXTURES = [
   {id:'r32_1',  phase:'r32', date:'2026-06-29', pdt:'1:00 pm',  t1:'Germany',             t2:'Paraguay',             venue:'Boston',             ch:'FOX'},
   {id:'r32_2',  phase:'r32', date:'2026-06-30', pdt:'2:00 pm',  t1:'France',              t2:'Sweden',               venue:'New York/NJ',        ch:'FOX'},
   {id:'r32_3',  phase:'r32', date:'2026-06-28', pdt:'12:00 pm', t1:'South Africa',        t2:'Canada',               venue:'Los Angeles',        ch:'FOX'},
-  {id:'r32_4',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Netherlands',         t2:'Morocco',              venue:'Monterrey',          ch:'FS1'},
+  {id:'r32_4',  phase:'r32', date:'2026-06-29', pdt:'6:00 pm',  t1:'Netherlands',         t2:'Morocco',              venue:'Monterrey',          ch:'FS1'},
   {id:'r32_5',  phase:'r32', date:'2026-06-29', pdt:'10:00 am', t1:'Brazil',              t2:'Japan',                venue:'Houston',            ch:'FS1'},
   {id:'r32_6',  phase:'r32', date:'2026-06-30', pdt:'10:00 am', t1:'Ivory Coast',         t2:'Norway',               venue:'Dallas',             ch:'FOX'},
   {id:'r32_7',  phase:'r32', date:'2026-06-30', pdt:'6:00 pm',  t1:'Mexico',              t2:'Ecuador',              venue:'Mexico City',        ch:'FS1'},
@@ -1136,6 +1136,11 @@ const KNOWN_RESULTS = [
   { t1:'Egypt',         t2:'Iran',                   date:'2026-06-26', score1:1, score2:1 },
   // ── Jun 28 (Round of 32 begins) ──
   { t1:'South Africa',  t2:'Canada',                 date:'2026-06-28', score1:0, score2:1 },
+  // ── Jun 29 (R32 continues) ──
+  { t1:'Brazil',        t2:'Japan',                  date:'2026-06-29', score1:2, score2:1 },
+  // Germany 1-1 Paraguay after extra time; Paraguay won 4-3 on penalties (Germany's first-ever WC penalty shootout loss)
+  { t1:'Germany',       t2:'Paraguay',                date:'2026-06-29', score1:1, score2:1, winnerOverride:'Paraguay' },
+  { t1:'Netherlands',   t2:'Morocco',                 date:'2026-06-29', score1:0, score2:0, live:true },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1196,13 +1201,18 @@ function applyKnownResults() {
     const n1 = normalizeName(r.t1);
     const n2 = normalizeName(r.t2);
     const key = scoreKey(n1, n2, r.date);
-    const winner = r.score1 > r.score2 ? n1 : r.score2 > r.score1 ? n2 : null;
+    // winnerOverride handles penalty-shootout results where the scoreline
+    // (90 min or extra time) is tied but one team still advances.
+    const winner = r.winnerOverride
+      ? normalizeName(r.winnerOverride)
+      : (r.score1 > r.score2 ? n1 : r.score2 > r.score1 ? n2 : null);
     // Only set if not already populated by a live fetch.
     // Store team1/team2 NAMES alongside scores so getScore() can correctly
     // re-orient them regardless of which order this source listed the teams in.
     if (!scores[key]) {
       scores[key] = { team1: n1, team2: n2, score1: r.score1, score2: r.score2,
-                      winner, status: r.live ? 'LIVE' : 'FT', isLive: !!r.live };
+                      winner, status: r.live ? 'LIVE' : 'FT', isLive: !!r.live,
+                      wentToPenalties: !!r.winnerOverride };
     }
   });
 }
