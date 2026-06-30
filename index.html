@@ -514,6 +514,7 @@
   .m-name.tbd-name {
     color: var(--muted); font-weight: 400; font-size: 16px;
   }
+  .m-name.winner-name { color: var(--accent); } /* matches bracket view's gold winner color */
   /* Score per team */
   .m-score-val {
     font-family: 'Barlow Condensed', sans-serif;
@@ -521,7 +522,7 @@
     color: var(--text); min-width: 22px; text-align: right;
     margin-left: 4px;
   }
-  .m-score-val.winner-score { color: #fff; }
+  .m-score-val.winner-score { color: var(--accent); } /* matches bracket view's gold winner color */
   .m-score-val.loser-score  { color: var(--muted); font-weight: 400; }
   .m-score-val.live-score   { color: var(--accent); }
 
@@ -1268,6 +1269,11 @@ async function fetchFromOpenfootball() {
       const t2 = normalizeName(m.team2?.name || m.team2 || '');
       if (!t1 || !t2 || !m.date) return;
       const key = scoreKey(t1, t2, m.date);
+      // NEVER overwrite an existing result — openfootball only fills gaps.
+      // KNOWN_RESULTS entries can carry extra info (wentToPenalties, live
+      // status, etc.) that openfootball's plain score object doesn't have;
+      // clobbering it here silently destroys that enrichment.
+      if (scores[key]) return;
       const s = m.score || m.result || {};
       const ft = s.ft || s.score || null;
       if (ft && Array.isArray(ft) && ft.length === 2) {
