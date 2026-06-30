@@ -498,7 +498,7 @@
     font-family: 'Barlow', sans-serif;
     font-size: 13px; font-weight: 400; color: var(--muted);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    min-width: 0;
+    min-width: 0; flex-shrink: 1;
   }
 
   /* ── TEAM ROWS ── */
@@ -1457,7 +1457,7 @@ function matchHtml(m) {
 
   return `<div class="${cls}" data-id="${m.id}">
     <div class="m-body">
-      <div class="m-info-row">${stateChip}${usaTag}${kickoffHtml}${groupTagInline}${venueTagInline}${penaltyBadge}</div>
+      <div class="m-info-row">${stateChip}${usaTag}${kickoffHtml}${groupTagInline}${penaltyBadge}${venueTagInline}</div>
       <div class="m-team-row">
         ${flag1}
         <span class="m-name${name1cls}${name1ExtraCls}">${m.t1}</span>
