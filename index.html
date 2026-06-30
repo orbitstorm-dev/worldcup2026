@@ -114,6 +114,14 @@
   }
   .bracket-team-name.tbd { color: var(--muted); font-weight: 400; }
   .bracket-team-name.winner { color: var(--accent); }
+  .bracket-team-name.winner-pk::after {
+    content: ' ✓';
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .bracket-meta .bm-pk {
+    color: var(--accent); font-weight: 700;
+  }
   .bracket-flag { font-size: 13px; flex-shrink: 0; }
   .bracket-score {
     font-family: 'Barlow Condensed', sans-serif;
@@ -518,6 +526,22 @@
   .m-score-val.loser-score  { color: var(--muted); font-weight: 400; }
   .m-score-val.live-score   { color: var(--accent); }
 
+  /* Penalty shootout indicator — scoreline alone can't show the winner
+     when it's tied, so an explicit badge + checkmark make it unambiguous */
+  .m-pk-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: .8px;
+    padding: 2px 6px; border-radius: 3px;
+    background: var(--surface2); color: var(--accent);
+    border: 1px solid rgba(232,200,74,0.4);
+    flex-shrink: 0;
+  }
+  .m-name.winner-pk::after {
+    content: ' ✓';
+    color: var(--accent);
+    font-weight: 700;
+  }
+
   /* Divider between teams */
   .m-divider {
     height: 1px; background: var(--border); margin: 4px 0 4px 34px;
@@ -778,12 +802,22 @@
   /* 7. Hide score line in the bottom sheet */
   body:not(.show-scores) .sheet-score { display: none; }
 
+  /* Hide penalty-shootout spoilers (badge + winner checkmark) until scores are on */
+  body:not(.show-scores) .m-pk-badge { display: none; }
+  body:not(.show-scores) .m-name.winner-pk::after { content: ''; }
+
   /* Bracket view spoiler protection */
   body:not(.show-scores) .bracket-score {
     visibility: hidden;
   }
   body:not(.show-scores) .bracket-team-name.winner {
     color: var(--text); /* no gold winner highlight when scores hidden */
+  }
+  body:not(.show-scores) .bracket-team-name.winner-pk::after {
+    content: '';
+  }
+  body:not(.show-scores) .bracket-meta .bm-pk {
+    display: none;
   }
 </style>
 </head>
@@ -1396,6 +1430,7 @@ function matchHtml(m) {
   const flag2 = f2 ? `<span class="m-flag">${f2}</span>` : `<span class="m-flag"></span>`;
 
   let score1Html = '', score2Html = '', name1ExtraCls = '', name2ExtraCls = '';
+  let penaltyBadge = '';
   if (sc) {
     const w1 = !sc.isLive && sc.winner === m.t1;
     const w2 = !sc.isLive && sc.winner === m.t2;
@@ -1406,6 +1441,13 @@ function matchHtml(m) {
     score2Html = `<span class="m-score-val ${s2cls}">${sc.score2}</span>`;
     if (w1) name1ExtraCls = ' winner-name';
     if (w2) name2ExtraCls = ' winner-name';
+    // Penalty shootout: the scoreline alone can't show who won (often tied),
+    // so add an explicit badge and a checkmark next to the advancing team.
+    if (sc.wentToPenalties && !sc.isLive) {
+      penaltyBadge = `<span class="m-pk-badge">PK</span>`;
+      if (w1) name1ExtraCls += ' winner-pk';
+      if (w2) name2ExtraCls += ' winner-pk';
+    }
   }
 
   const name1cls = isTBD && m.t1 === 'TBD' ? ' tbd-name' : '';
@@ -1415,7 +1457,7 @@ function matchHtml(m) {
 
   return `<div class="${cls}" data-id="${m.id}">
     <div class="m-body">
-      <div class="m-info-row">${stateChip}${usaTag}${kickoffHtml}${groupTagInline}${venueTagInline}</div>
+      <div class="m-info-row">${stateChip}${usaTag}${kickoffHtml}${groupTagInline}${venueTagInline}${penaltyBadge}</div>
       <div class="m-team-row">
         ${flag1}
         <span class="m-name${name1cls}${name1ExtraCls}">${m.t1}</span>
@@ -1802,11 +1844,13 @@ function bracketTeamHtml(name, sc, isT1) {
   const f = isTbd ? '' : flag(name);
   const score = sc ? (isT1 ? sc.score1 : sc.score2) : null;
   const isWinner = sc && !sc.isLive && sc.winner === name;
+  const isPkWinner = isWinner && sc.wentToPenalties;
   const nameCls = isTbd ? 'tbd' : isWinner ? 'winner' : '';
+  const pkCls = isPkWinner ? ' winner-pk' : '';
   const scoreVal = (score !== null && score !== undefined) ? score : '';
   const scoreHidden = (!sc) ? ' hidden-score' : '';
   return `<div class="bracket-team">
-    <span class="bracket-team-name ${nameCls}">
+    <span class="bracket-team-name ${nameCls}${pkCls}">
       ${f ? `<span class="bracket-flag">${f}</span>` : ''}${name}
     </span>
     <span class="bracket-score${scoreHidden}">${scoreVal}</span>
@@ -1826,7 +1870,8 @@ function bracketMatchHtml(m, x, y) {
   } else {
     const dateShort = new Date(m.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
     const liveTag = live ? `<span class="bm-live">● LIVE</span> · ` : '';
-    metaHtml = `${liveTag}<span class="bm-date">${dateShort}</span> · <span class="bm-time">${m.pdt} PDT</span>`;
+    const pkTag = (sc && sc.wentToPenalties && !sc.isLive) ? ` · <span class="bm-pk">PK</span>` : '';
+    metaHtml = `${liveTag}<span class="bm-date">${dateShort}</span> · <span class="bm-time">${m.pdt} PDT</span>${pkTag}`;
   }
 
   return `<div class="${cls}" style="left:${x}px; top:${y}px; width:${BR_CARD_W}px;">
