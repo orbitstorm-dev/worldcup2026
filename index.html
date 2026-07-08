@@ -1032,10 +1032,10 @@ const FIXTURES = [
   {id:'r16_7', phase:'r16', date:'2026-07-07', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FS1'},
   {id:'r16_8', phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',          ch:'FOX'},
   // QUARTERFINALS — Jul 9–11
-  {id:'qf_1', phase:'qf', date:'2026-07-09', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Boston',              ch:'FOX'},
-  {id:'qf_2', phase:'qf', date:'2026-07-10', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Los Angeles',         ch:'FOX'},
-  {id:'qf_3', phase:'qf', date:'2026-07-11', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',               ch:'FOX'},
-  {id:'qf_4', phase:'qf', date:'2026-07-11', pdt:'5:00 pm',  t1:'TBD', t2:'TBD', venue:'Kansas City',         ch:'FS1'},
+  {id:'qf_1', phase:'qf', date:'2026-07-09', pdt:'1:00 pm',  t1:'France', t2:'Morocco', venue:'Boston',              ch:'FOX'},
+  {id:'qf_2', phase:'qf', date:'2026-07-10', pdt:'12:00 pm', t1:'Spain', t2:'Belgium', venue:'Los Angeles',         ch:'FOX'},
+  {id:'qf_3', phase:'qf', date:'2026-07-11', pdt:'2:00 pm',  t1:'Norway', t2:'England', venue:'Miami',               ch:'FOX'},
+  {id:'qf_4', phase:'qf', date:'2026-07-11', pdt:'5:00 pm',  t1:'Argentina', t2:'Switzerland', venue:'Kansas City',         ch:'FS1'},
   // SEMIFINALS — Jul 14–15
   {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',              ch:'FOX'},
   {id:'sf_2', phase:'sf', date:'2026-07-15', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Atlanta',             ch:'FOX'},
@@ -1187,6 +1187,22 @@ const KNOWN_RESULTS = [
   // ── Jul 2 (R32 continues) ──
   { t1:'Spain',         t2:'Austria',                 date:'2026-07-02', score1:3, score2:0 },
   { t1:'Portugal',      t2:'Croatia',                 date:'2026-07-02', score1:2, score2:1 }, // after extra time
+  // ── Jul 2-3 (R32 concludes) ──
+  { t1:'Switzerland',   t2:'Algeria',                 date:'2026-07-02', score1:2, score2:0 },
+  { t1:'Argentina',     t2:'Cape Verde',              date:'2026-07-03', score1:3, score2:2 }, // after extra time
+  { t1:'Colombia',      t2:'Ghana',                   date:'2026-07-03', score1:1, score2:0 },
+  // Egypt 1-1 Australia after extra time; Egypt won 4-2 on penalties
+  { t1:'Australia',     t2:'Egypt',                   date:'2026-07-03', score1:1, score2:1, winnerOverride:'Egypt' },
+  // ── Jul 4-7 (Round of 16, all 8 matches) ──
+  { t1:'Canada',        t2:'Morocco',                 date:'2026-07-04', score1:0, score2:3 },
+  { t1:'Paraguay',      t2:'France',                  date:'2026-07-04', score1:0, score2:1 },
+  { t1:'Brazil',        t2:'Norway',                  date:'2026-07-05', score1:1, score2:2 },
+  { t1:'Mexico',        t2:'England',                 date:'2026-07-05', score1:2, score2:3 },
+  { t1:'Spain',         t2:'Portugal',                date:'2026-07-06', score1:1, score2:0 },
+  { t1:'USA',           t2:'Belgium',                 date:'2026-07-06', score1:1, score2:4 },
+  { t1:'Argentina',     t2:'Egypt',                   date:'2026-07-07', score1:3, score2:2 },
+  // Switzerland 0-0 Colombia after extra time; Switzerland won 4-3 on penalties
+  { t1:'Switzerland',   t2:'Colombia',                date:'2026-07-07', score1:0, score2:0, winnerOverride:'Switzerland' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
