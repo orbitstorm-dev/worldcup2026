@@ -41,8 +41,6 @@
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
   }
-
-
   /* ── BRACKET TOGGLE BUTTON ── */
   #bracket-btn {
     font-family: 'Barlow Condensed', sans-serif;
@@ -56,7 +54,6 @@
   }
   #bracket-btn:hover { border-color: var(--accent); color: var(--accent); }
   #bracket-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
-
   /* ── BRACKET VIEW — absolutely positioned for exact connector alignment ── */
   #bracket-view {
     display: none;
@@ -69,12 +66,10 @@
     box-sizing: border-box;
   }
   #bracket-view.open { display: block; }
-
   .bracket-canvas {
     position: relative;
     margin: 0 16px;
   }
-
   .bracket-col-title {
     position: absolute;
     /* top is set inline per-column in JS, positioned above that column's first card */
@@ -83,7 +78,6 @@
     text-transform: uppercase; color: var(--accent);
     text-align: center;
   }
-
   .bracket-match {
     position: absolute;
     background: var(--surface);
@@ -147,7 +141,6 @@
     color: var(--live); font-weight: 700;
   }
   .bracket-divider { height: 1px; background: var(--border); }
-
   /* Connector lines — drawn as absolutely positioned divs */
   .bracket-connector {
     position: absolute;
@@ -161,12 +154,10 @@
     width: 2px;
     background: var(--border2);
   }
-
   .bracket-trophy {
     position: absolute;
     text-align: center; font-size: 24px;
   }
-
   /* ── HEADER ── */
   header {
     position: fixed;
@@ -197,7 +188,6 @@
   .sync-dot.live { background: var(--live); box-shadow: 0 0 6px var(--live); animation: pulse 1.8s infinite; }
   .sync-dot.ok   { background: var(--usa); }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
   /* ── CONTROLS ── */
   .controls {
     padding: 8px 12px;
@@ -208,7 +198,6 @@
     top: 49px; left: 0; right: 0;
     z-index: 40;
   }
-
   /* Phase dropdown */
   #phase-select {
     font-family: 'Barlow Condensed', sans-serif;
@@ -229,7 +218,6 @@
   }
   #phase-select:focus { border-color: var(--accent); }
   #phase-select option { background: #1e242c; color: var(--text); }
-
   /* Today button */
   #today-btn {
     font-family: 'Barlow Condensed', sans-serif;
@@ -241,7 +229,6 @@
     transition: all .15s;
   }
   #today-btn:hover { border-color: var(--accent); color: var(--accent); }
-
   /* Search icon button + expanding input */
   .search-wrap {
     position: relative; display: flex; align-items: center;
@@ -271,20 +258,16 @@
   }
   #search-input:focus { border-color: var(--accent); }
   #search-input::placeholder { color: var(--muted); }
-
   /* Count in header — remaining / total */
   .count-badge {
     font-size: 15px; font-weight: 600; color: var(--text);
     font-family: 'Barlow Condensed', sans-serif; letter-spacing: .3px;
     white-space: nowrap; flex-shrink: 0;
   }
-
   /* ── MAIN ── */
   main { padding: 106px 0 80px; max-width: 680px; margin: 0 auto; }
-
   /* ── PHASE HEADER ── */
   .phase-block { padding-top: 28px; }
-
   /* Phase header — sticky banner that stays visible while scrolling */
   .phase-label {
     margin: 0 14px 0;
@@ -308,7 +291,6 @@
     pointer-events: none;
     border-radius: inherit;
   }
-
   /* When pinned — compact single row */
   .phase-label.is-pinned {
     padding: 7px 16px;
@@ -323,7 +305,6 @@
   .phase-label.is-pinned .phase-label-eyebrow { display: none; }
   .phase-label.is-pinned .phase-label-title { font-size: 20px; }
   .phase-label.is-pinned .phase-label-icon { font-size: 20px; }
-
   /* Eyebrow spans full width on its own line */
   .phase-label-eyebrow {
     font-family: 'Barlow Condensed', sans-serif;
@@ -347,10 +328,8 @@
     font-size: 28px; opacity: 0.4; flex-shrink: 0;
     transition: font-size .2s;
   }
-
   /* ── DAY BLOCK ── */
   .day-block { margin-bottom: 20px; padding: 0 14px; }
-
   /* Full-width date banner */
   .day-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -391,14 +370,12 @@
     background: var(--accent); color: #000;
     padding: 3px 8px; border-radius: 4px;
   }
-
   /* Cards wrapper — matches share a bordered container */
   /* match-stack is now just a spacing wrapper — no shared border */
   .match-stack {
     display: flex; flex-direction: column; gap: 12px;
     padding-top: 8px;
   }
-
   /* ── MATCH CARD — each match is its own rounded card ── */
   .match {
     display: grid;
@@ -416,11 +393,9 @@
     -webkit-transform: translateZ(0);
   }
   .match:hover { background: var(--surface2); }
-
   /* State: finished */
   .match.finished { opacity: 0.48; }
   .match.finished:hover { opacity: 0.78; background: var(--surface2); }
-
   /* State: live */
   .match.live-now { background: #2a1515; border-color: rgba(248,113,113,0.45); opacity: 1; }
   .match.live-now::before {
@@ -430,7 +405,6 @@
     animation: live-bar 1.6s ease-in-out infinite;
   }
   @keyframes live-bar { 0%,100%{opacity:1} 50%{opacity:.25} }
-
   /* State: USA */
   .match.usa { background: #0d2018; border-color: var(--usa-border); opacity: 1; }
   .match.usa::before {
@@ -440,15 +414,12 @@
   .match.usa.finished { opacity: 0.48; }
   .match.usa.live-now { background: var(--live-dim); }
   .match.usa.live-now::before { background: var(--live); animation: live-bar 1.6s ease-in-out infinite; }
-
   /* ── MATCH BODY (left column) ── */
   .m-body { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-
   /* ── TOP INFO ROW: time · state · group · venue — all on one line ── */
   .m-info-row {
     display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap;
   }
-
   /* State chip — always visible regardless of score toggle */
   .m-state {
     font-family: 'Barlow Condensed', sans-serif;
@@ -462,7 +433,6 @@
   .state-ft       { background: var(--surface2); color: var(--muted);
                     border: 1px solid rgba(255,255,255,0.15); }
   .state-upcoming { display: none; } /* no chip for upcoming — cleaner */
-
   /* USA tag */
   .m-pill-usa {
     font-family: 'Barlow Condensed', sans-serif;
@@ -471,19 +441,16 @@
     background: var(--usa); color: #000;
     display: inline-flex; align-items: center; flex-shrink: 0;
   }
-
   /* Kickoff time — larger, more prominent */
   .m-kickoff {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 15px; font-weight: 600; color: var(--text);
     letter-spacing: .3px; flex-shrink: 0;
   }
-
   /* Separator dot between info items */
   .m-sep {
     color: var(--border2); font-size: 13px; flex-shrink: 0; line-height: 1;
   }
-
   /* Group label */
   .m-group-tag {
     font-family: 'Barlow Condensed', sans-serif;
@@ -491,7 +458,6 @@
     text-transform: uppercase; color: var(--muted);
     flex-shrink: 0;
   }
-
   /* Venue — let it truncate if line gets too long */
   .m-venue-tag {
     font-family: 'Barlow', sans-serif;
@@ -499,7 +465,6 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     min-width: 0; flex-shrink: 1;
   }
-
   /* ── TEAM ROWS ── */
   .m-team-row {
     display: flex; align-items: center; gap: 8px;
@@ -525,7 +490,6 @@
   .m-score-val.winner-score { color: var(--accent); } /* matches bracket view's gold winner color */
   .m-score-val.loser-score  { color: var(--muted); font-weight: 400; }
   .m-score-val.live-score   { color: var(--accent); }
-
   /* Penalty shootout indicator — scoreline alone can't show the winner
      when it's tied, so an explicit badge + checkmark make it unambiguous */
   .m-pk-badge {
@@ -541,12 +505,10 @@
     color: var(--accent);
     font-weight: 700;
   }
-
   /* Divider between teams */
   .m-divider {
     height: 1px; background: var(--border); margin: 4px 0 4px 34px;
   }
-
   /* ── MATCH RIGHT (channel) ── */
   .m-right {
     display: flex; flex-direction: column; align-items: flex-end;
@@ -559,20 +521,17 @@
   }
   .ch-FOX { background: var(--fox); color: #fff; }
   .ch-FS1 { background: var(--fs1); color: #fff; }
-
   /* ── EMPTY ── */
   .empty {
     text-align: center; padding: 60px 20px;
     color: var(--muted); font-size: 14px;
   }
-
   /* ── FOOTER ── */
   footer {
     text-align: center; padding: 16px;
     font-size: 11px; color: var(--muted);
     border-top: 1px solid var(--border);
   }
-
   /* ── LOADING SKELETON ── */
   .skeleton-wrap { padding: 16px; }
   .skel {
@@ -583,7 +542,6 @@
     animation: shimmer 1.4s infinite;
   }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
   /* ── BOTTOM SHEET ── */
   .sheet-overlay {
     display: none;
@@ -661,7 +619,6 @@
   }
   .sheet-cancel:active { opacity: .7; }
   .match { cursor: pointer; }
-
   /* ── RESPONSIVE ── */
   @media (max-width: 380px) {
     .day-block { padding: 0 10px; }
@@ -674,9 +631,6 @@
     .match-stack { gap: 5px; padding-top: 5px; }
     .match { padding: 12px 11px; }
   }
-
-
-
   /* ── REFRESH FAB ── */
   #refresh-fab {
     position: fixed;
@@ -700,7 +654,6 @@
   #refresh-fab.fetching { background: var(--surface2); border: 1.5px solid var(--accent); }
   #refresh-fab .fab-icon { display: inline-block; color: #000; transition: color .15s; }
   #refresh-fab.fetching .fab-icon { animation: spin 0.9s linear infinite; color: var(--accent); }
-
   /* ── FETCH BUTTON ── */
   #fetch-btn {
     display: flex; align-items: center; gap: 6px;
@@ -763,23 +716,19 @@
     transition: color .15s;
   }
   .spoiler-toggle.scores-on .st-label { color: var(--accent); }
-
   /* ── SPOILER PROTECTION: scores hidden ────────────────────────────────────
      Goal: a finished match must look IDENTICAL to an upcoming one.
      Every visual tell — score numbers, winner highlight, dim, strikethrough,
      FT badge, left bar color — is suppressed until the user turns scores on.
   ── */
-
   /* 1. Completely hide score numbers (no blur — layout shift is a tell) */
   body:not(.show-scores) .m-score-val {
     visibility: hidden;
     width: 0; min-width: 0; padding: 0; margin: 0;
     overflow: hidden;
   }
-
   /* 2. State chip (live/ft/upcoming) is always visible — never hidden */
   /* score numbers are hidden, not the state indicator */
-
   /* 3. Winner/loser name coloring — force both teams to look identical */
   body:not(.show-scores) .m-name.winner-name {
     color: var(--text);
@@ -790,22 +739,16 @@
     color: var(--text);
     font-weight: 700;
   }
-
   /* 4. Dimming of finished rows is ALWAYS on — it signals "past game"
         without revealing any score information. Only score numbers
         and winner/loser coloring are gated by the toggle. */
-
   /* 5. Kickoff time — no special treatment when scores hidden (handled by body.show-scores rule) */
-
   /* 6. USA left bar stays green always (not a score tell) — no override needed */
-
   /* 7. Hide score line in the bottom sheet */
   body:not(.show-scores) .sheet-score { display: none; }
-
   /* Hide penalty-shootout spoilers (badge + winner checkmark) until scores are on */
   body:not(.show-scores) .m-pk-badge { display: none; }
   body:not(.show-scores) .m-name.winner-pk::after { content: ''; }
-
   /* Bracket view spoiler protection */
   body:not(.show-scores) .bracket-score {
     visibility: hidden;
@@ -822,7 +765,6 @@
 </style>
 </head>
 <body>
-
 <header>
   <a class="logo" href="#">
     <span class="logo-trophy">⚽</span>
@@ -843,7 +785,6 @@
     </div>
   </div>
 </header>
-
 <div class="controls">
   <select id="phase-select" title="Filter by stage">
     <option value="all">All Matches</option>
@@ -864,20 +805,15 @@
   </div>
   <div class="count-badge" id="count-badge"></div>
 </div>
-
 <main id="main"></main>
 <div id="bracket-view"></div>
-
 <footer>
   Data: openfootball/worldcup.json — Times in Pacific (PDT) — Not affiliated with FIFA
 </footer>
-
 <!-- Floating refresh button — thumb-friendly, always reachable -->
 <button id="refresh-fab" title="Refresh scores" aria-label="Refresh scores">
   <span class="fab-icon">↻</span>
 </button>
-
-
 <!-- WATCH SHEET -->
 <div class="sheet-overlay" id="sheet-overlay">
   <div class="sheet" id="sheet">
@@ -890,7 +826,6 @@
     <button class="sheet-cancel" id="sheet-cancel">Cancel</button>
   </div>
 </div>
-
 <script>
 // ─────────────────────────────────────────────
 // FLAGS
@@ -912,7 +847,6 @@ const FLAGS = {
   'DR Congo':'🇨🇩','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷','Ghana':'🇬🇭',
   'Panama':'🇵🇦','Uzbekistan':'🇺🇿','Colombia':'🇨🇴'
 };
-
 function flag(name) {
   if (!name || name === 'TBD') return '';
   if (FLAGS[name]) return FLAGS[name];
@@ -922,7 +856,6 @@ function flag(name) {
   }
   return '';
 }
-
 // ─────────────────────────────────────────────
 // CANONICAL FIXTURE LIST (all 104 matches)
 // Keys that openfootball uses to match results
@@ -1029,8 +962,8 @@ const FIXTURES = [
   {id:'r16_4', phase:'r16', date:'2026-07-05', pdt:'5:00 pm',  t1:'Mexico', t2:'England', venue:'Mexico City',        ch:'FS1'},
   {id:'r16_5', phase:'r16', date:'2026-07-06', pdt:'12:00 pm', t1:'Spain', t2:'Portugal', venue:'Dallas',             ch:'FOX'},
   {id:'r16_6', phase:'r16', date:'2026-07-06', pdt:'5:00 pm',  t1:'USA', t2:'Belgium', venue:'Seattle ⭐',          ch:'FOX', usa:true},
-  {id:'r16_7', phase:'r16', date:'2026-07-07', pdt:'9:00 am',  t1:'TBD', t2:'TBD', venue:'Atlanta',            ch:'FS1'},
-  {id:'r16_8', phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'TBD', t2:'TBD', venue:'Vancouver',          ch:'FOX'},
+  {id:'r16_7', phase:'r16', date:'2026-07-07', pdt:'9:00 am',  t1:'Argentina', t2:'Egypt', venue:'Atlanta',            ch:'FS1'},
+  {id:'r16_8', phase:'r16', date:'2026-07-07', pdt:'1:00 pm',  t1:'Switzerland', t2:'Colombia', venue:'Vancouver',          ch:'FOX'},
   // QUARTERFINALS — Jul 9–11
   {id:'qf_1', phase:'qf', date:'2026-07-09', pdt:'1:00 pm',  t1:'France', t2:'Morocco', venue:'Boston',              ch:'FOX'},
   {id:'qf_2', phase:'qf', date:'2026-07-10', pdt:'12:00 pm', t1:'Spain', t2:'Belgium', venue:'Los Angeles',         ch:'FOX'},
@@ -1044,7 +977,6 @@ const FIXTURES = [
   // FINAL — Jul 19
   {id:'final', phase:'final', date:'2026-07-19', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'New York/NJ',     ch:'FOX'},
 ];
-
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
@@ -1052,14 +984,12 @@ let scores = {};     // key: "Team1 v Team2 YYYY-MM-DD" -> {score1, score2, winn
 let scoresVisible = false; // default: spoiler protection ON
 let activePhase = 'all';
 let searchText   = '';
-
 // ─────────────────────────────────────────────
 // OPENFOOTBALL DATA FETCH
 // Tries the 2026 worldcup.json; falls back gracefully
 // ─────────────────────────────────────────────
 // SCORE DATA
 // ─────────────────────────────────────────────
-
 // Hardcoded confirmed results — updated as matches finish.
 // openfootball is manually maintained and lags by hours;
 // these ensure scores show immediately while we wait for the JSON to update.
@@ -1121,8 +1051,8 @@ const KNOWN_RESULTS = [
   { t1:'Netherlands',   t2:'Sweden',                date:'2026-06-20', score1:5, score2:1 },
   { t1:'Germany',       t2:'Ivory Coast',           date:'2026-06-20', score1:2, score2:1 },
   { t1:'Ecuador',       t2:'Curaçao',               date:'2026-06-20', score1:0, score2:0 },
-  // ── Jun 21 ──
-  { t1:'Tunisia',       t2:'Japan',                 date:'2026-06-21', score1:0, score2:4 },
+  // ── Jun 20 ──
+  { t1:'Tunisia',       t2:'Japan',                 date:'2026-06-20', score1:0, score2:4 },
   // ── Jun 22 ──
   { t1:'Argentina',     t2:'Austria',               date:'2026-06-22', score1:2, score2:0 },
   { t1:'France',        t2:'Iraq',                  date:'2026-06-22', score1:3, score2:0 },
@@ -1154,8 +1084,6 @@ const KNOWN_RESULTS = [
   { t1:'Congo DR',      t2:'Uzbekistan',            date:'2026-06-27', score1:3, score2:1 },
   { t1:'Jordan',        t2:'Argentina',             date:'2026-06-27', score1:1, score2:3 },
   { t1:'Algeria',       t2:'Austria',               date:'2026-06-27', score1:3, score2:3 },
-  // ── Jun 20 (found by audit — was missing) ──
-  { t1:'Tunisia',       t2:'Japan',                 date:'2026-06-20', score1:0, score2:4 },
   // ── Jun 21 (found by audit — was missing) ──
   { t1:'Spain',         t2:'Saudi Arabia',          date:'2026-06-21', score1:4, score2:0 },
   { t1:'Belgium',       t2:'Iran',                  date:'2026-06-21', score1:0, score2:0 },
@@ -1204,7 +1132,6 @@ const KNOWN_RESULTS = [
   // Switzerland 0-0 Colombia after extra time; Switzerland won 4-3 on penalties
   { t1:'Switzerland',   t2:'Colombia',                date:'2026-07-07', score1:0, score2:0, winnerOverride:'Switzerland' },
 ];
-
 // ─────────────────────────────────────────────────────────────────────────────
 // SAFETY NET: warn loudly if a live:true match is stale (kickoff was hours ago)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1233,7 +1160,6 @@ function checkStaleLiveFlags() {
     }
   });
 }
-
 function normalizeName(n) {
   if (!n) return '';
   return n.trim()
@@ -1246,7 +1172,6 @@ function normalizeName(n) {
     .replace(/Curaçao|Curacao/i, 'Curaçao')
     .replace(/United States|USA/i, 'USA');
 }
-
 function scoreKey(t1, t2, date) {
   // Sort team names alphabetically so the key is ORDER-INDEPENDENT.
   // Different data sources (openfootball, manual KNOWN_RESULTS, etc.) don't
@@ -1257,7 +1182,6 @@ function scoreKey(t1, t2, date) {
   const [a, b] = [n1, n2].sort();
   return `${a} v ${b} ${date}`;
 }
-
 function applyKnownResults() {
   KNOWN_RESULTS.forEach(r => {
     const n1 = normalizeName(r.t1);
@@ -1278,11 +1202,9 @@ function applyKnownResults() {
     }
   });
 }
-
 // ── OPENFOOTBALL SCORE FETCH ──────────────────────────────────────────────────
 // Free, no-API-key, community-maintained World Cup results JSON on GitHub.
 // This is the PRIMARY score source for both manual fetch and auto-refresh.
-
 async function fetchFromOpenfootball() {
   const OF_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
   const fetchLabel = document.getElementById('fetch-label');
@@ -1326,14 +1248,12 @@ async function fetchFromOpenfootball() {
     return 0;
   }
 }
-
 async function fetchScores() {
   // On auto-refresh just use the lighter openfootball fetch + known results
   applyKnownResults();
   await fetchFromOpenfootball();
   render();
 }
-
 function setSyncState(state, liveCount) {
   const dot   = document.getElementById('sync-dot');
   const label = document.getElementById('sync-label');
@@ -1347,20 +1267,17 @@ function setSyncState(state, liveCount) {
     label.textContent = 'Offline';
   }
 }
-
 // ─────────────────────────────────────────────
 // RENDERING
 // ─────────────────────────────────────────────
 const PHASE_LABELS = { group:'Group Stage', r32:'Round of 32', r16:'Round of 16', qf:'Quarterfinals', sf:'Semifinals', '3rd':'3rd Place', final:'Final' };
 const PHASE_ORDER  = ['group','r32','r16','qf','sf','3rd','final'];
-
 function todayPDT() {
   // Pure UTC math — not affected by device timezone setting
   const pdtOffsetMs = -7 * 60 * 60 * 1000;
   const pdt = new Date(Date.now() + pdtOffsetMs);
   return pdt.toISOString().slice(0, 10);
 }
-
 function dayHeaderHtml(dateStr) {
   const d = new Date(dateStr + 'T12:00:00');
   const isToday = dateStr === todayPDT();
@@ -1378,12 +1295,10 @@ function dayHeaderHtml(dateStr) {
     ${chip}
   </div>`;
 }
-
 function getScore(m) {
   const k = scoreKey(m.t1, m.t2, m.date);
   const raw = scores[k];
   if (!raw) return null;
-
   // The stored object's score1/score2 correspond to ITS OWN team1/team2 order,
   // which may be reversed relative to this fixture's m.t1/m.t2. Re-orient so
   // the returned score1 ALWAYS corresponds to m.t1 and score2 to m.t2.
@@ -1397,7 +1312,6 @@ function getScore(m) {
   }
   return raw;
 }
-
 function parsePdtMins(pdtStr) {
   // Parses "7:00 pm" -> minutes since midnight in PDT
   const clean = pdtStr.replace(/ (am|pm)/i, '');
@@ -1407,47 +1321,37 @@ function parsePdtMins(pdtStr) {
   const h = isPM ? hr + 12 : isAM ? 0 : hr;
   return h * 60 + (min || 0);
 }
-
 function isLiveNow(m) {
   const sc = getScore(m);
   if (sc && sc.isLive) return true;  // explicitly flagged as live in KNOWN_RESULTS
   if (sc) return false;              // has a final score — not live
-
   // Convert current time to PDT by using a fixed -7h offset
   const nowUtcMs = Date.now();
   const pdtOffsetMs = -7 * 60 * 60 * 1000;
   const nowPDT = new Date(nowUtcMs + pdtOffsetMs);
   const todayStr = nowPDT.toISOString().slice(0, 10); // YYYY-MM-DD in PDT
-
   if (m.date !== todayStr) return false; // not today in PDT
-
   const kickoffMins = parsePdtMins(m.pdt);
   const nowMins = nowPDT.getUTCHours() * 60 + nowPDT.getUTCMinutes();
-
   // Consider live from kickoff up to 115 mins after (standard match length)
   return nowMins >= kickoffMins && nowMins <= kickoffMins + 115;
 }
-
 function matchHtml(m) {
   const sc   = getScore(m);
   const live = isLiveNow(m);
   const isTBD = m.t1 === 'TBD' || m.t2 === 'TBD';
-
   // Row class
   let cls = 'match';
   if (m.usa)  cls += ' usa';
   if (live)   cls += ' live-now';
   if (sc)     cls += ' finished';
-
   // State chip — always visible, never hidden by spoiler toggle
   let stateChip = '';
   if (live)    stateChip = `<span class="m-state state-live">● LIVE</span>`;
   else if (sc) stateChip = `<span class="m-state state-ft">Final</span>`;
   else         stateChip = `<span class="m-state state-upcoming"></span>`;
-
   // USA tag shown alongside state (only for group stage USA games)
   const usaTag = m.usa ? `<span class="m-pill-usa">🇺🇸 USA</span>` : '';
-
   const kickoffHtml = `<span class="m-kickoff">${m.pdt} PDT</span>`;
   const sep = '<span class="m-sep">·</span>';
   const groupTagInline = m.group
@@ -1456,12 +1360,10 @@ function matchHtml(m) {
   const venueTagInline = m.venue
     ? `${sep}<span class="m-venue-tag">${m.venue}</span>`
     : '';
-
   // Per-team score values
   const f1 = flag(m.t1), f2 = flag(m.t2);
   const flag1 = f1 ? `<span class="m-flag">${f1}</span>` : `<span class="m-flag"></span>`;
   const flag2 = f2 ? `<span class="m-flag">${f2}</span>` : `<span class="m-flag"></span>`;
-
   let score1Html = '', score2Html = '', name1ExtraCls = '', name2ExtraCls = '';
   let penaltyBadge = '';
   if (sc) {
@@ -1482,12 +1384,9 @@ function matchHtml(m) {
       if (w2) name2ExtraCls += ' winner-pk';
     }
   }
-
   const name1cls = isTBD && m.t1 === 'TBD' ? ' tbd-name' : '';
   const name2cls = isTBD && m.t2 === 'TBD' ? ' tbd-name' : '';
-
   // groupTag and venueTag now inlined in m-info-row
-
   return `<div class="${cls}" data-id="${m.id}">
     <div class="m-body">
       <div class="m-info-row">${stateChip}${usaTag}${kickoffHtml}${groupTagInline}${penaltyBadge}${venueTagInline}</div>
@@ -1508,7 +1407,6 @@ function matchHtml(m) {
     </div>
   </div>`;
 }
-
 function render() {
   const filtered = FIXTURES.filter(m => {
     if (activePhase === 'usa') return m.usa;
@@ -1522,7 +1420,6 @@ function render() {
     }
     return true;
   });
-
   // Always the full 104-match tournament totals
   const allTotal  = FIXTURES.length;                          // 104
   const allPlayed = FIXTURES.filter(m => { const s = getScore(m); return s && !s.isLive; }).length;
@@ -1531,7 +1428,6 @@ function render() {
   document.getElementById('count-badge').innerHTML =
     `${allRemain}<span style="color:var(--muted);font-weight:400"> / ${allTotal}</span>`
     + `<span style="color:var(--muted);font-size:12px;font-weight:400;margin-left:6px">${pct}% done</span>`;
-
   // Group by phase → date string (for stable sort)
   const byPhase = {};
   filtered.forEach(m => {
@@ -1539,7 +1435,6 @@ function render() {
     if (!byPhase[m.phase][m.date]) byPhase[m.phase][m.date] = [];
     byPhase[m.phase][m.date].push(m);
   });
-
   let html = '';
   PHASE_ORDER.forEach(ph => {
     if (!byPhase[ph]) return;
@@ -1573,11 +1468,9 @@ function render() {
     });
     html += '</div>';
   });
-
   if (!html) html = '<div class="empty">No matches found.</div>';
   document.getElementById('main').innerHTML = html;
 }
-
 // ─────────────────────────────────────────────
 // CONTROLS
 // ─────────────────────────────────────────────
@@ -1587,7 +1480,6 @@ document.getElementById('phase-select').addEventListener('change', e => {
   hasAutoScrolled = false;
   render();
 });
-
 // Today button
 document.getElementById('today-btn').addEventListener('click', () => {
   // Reset to All and scroll to today
@@ -1603,11 +1495,9 @@ document.getElementById('today-btn').addEventListener('click', () => {
   // Scroll explicitly after two frames to ensure DOM is settled
   requestAnimationFrame(() => requestAnimationFrame(scrollToToday));
 });
-
 // Search icon toggle + input
 const searchBtn   = document.getElementById('search-btn');
 const searchInput = document.getElementById('search-input');
-
 searchBtn.addEventListener('click', () => {
   const isOpen = searchInput.classList.toggle('open');
   searchBtn.classList.toggle('active', isOpen);
@@ -1619,12 +1509,10 @@ searchBtn.addEventListener('click', () => {
     render();
   }
 });
-
 searchInput.addEventListener('input', e => {
   searchText = e.target.value;
   render();
 });
-
 // Close search on outside tap
 document.addEventListener('click', e => {
   if (!e.target.closest('.search-wrap')) {
@@ -1632,14 +1520,12 @@ document.addEventListener('click', e => {
     searchBtn.classList.remove('active');
   }
 });
-
 // ─────────────────────────────────────────────
 // INIT + AUTO-REFRESH
 // ─────────────────────────────────────────────
 // ── SPOILER TOGGLE WIRING ──────────────────────────────
 const spoilerBtn = document.getElementById('spoiler-toggle');
 const stLabel    = document.getElementById('st-label');
-
 function applyScoreVisibility() {
   if (scoresVisible) {
     document.body.classList.add('show-scores');
@@ -1651,20 +1537,16 @@ function applyScoreVisibility() {
     stLabel.textContent = 'Scores';
   }
 }
-
 spoilerBtn.addEventListener('click', () => {
   scoresVisible = !scoresVisible;
   applyScoreVisibility();
 });
-
 applyScoreVisibility(); // set initial state (hidden)
 checkStaleLiveFlags(); // safety net — warns in console if a live game looks stale
 render(); // render schedule immediately — scores fill in after fetch
-
 // Wire fetch button
 // Wire both the header fetch button AND the floating refresh FAB
 const fab = document.getElementById('refresh-fab');
-
 async function triggerFetch() {
   // Header button: fetch scores from openfootball (free, no API key needed)
   const btn = document.getElementById('fetch-btn');
@@ -1678,7 +1560,6 @@ async function triggerFetch() {
   btn.classList.remove('fetching');
   render();
 }
-
 function triggerReload() {
   // FAB: hard reload the page so GitHub Pages serves latest code,
   // then scores are fetched fresh automatically on startup.
@@ -1692,10 +1573,8 @@ function triggerReload() {
   // Brief spin so user sees feedback before reload
   setTimeout(() => { window.location.reload(true); }, 400);
 }
-
 document.getElementById('fetch-btn').addEventListener('click', triggerFetch);
 fab.addEventListener('click', triggerReload);
-
 fetchScores();
 // Refresh every 5 minutes
 setInterval(fetchScores, 5 * 60 * 1000);
@@ -1708,31 +1587,25 @@ const teamsTxt = document.getElementById('sheet-teams');
 const metaTxt  = document.getElementById('sheet-meta');
 const actionsEl= document.getElementById('sheet-actions');
 const cancelBtn= document.getElementById('sheet-cancel');
-
 // Fox Sports universal link — works on iOS to open the app (or website fallback)
 // FS1 content lives inside the same Fox Sports app
 const FOX_APP_URL = 'https://www.foxsports.com/live';
 const FS1_APP_URL = 'https://www.foxsports.com/live';
-
 function openSheet(m) {
   const f1 = flag(m.t1), f2 = flag(m.t2);
   const team1 = (f1 ? f1 + ' ' : '') + m.t1;
   const team2 = (f2 ? f2 + ' ' : '') + m.t2;
-
   teamsTxt.innerHTML =
     `<span>${team1}</span><span class="sheet-vs">vs</span><span>${team2}</span>`;
-
   const sc = getScore(m);
   const scoreStr = sc ? `<span class="sheet-score">Final: ${m.t1} ${sc.score1}–${sc.score2} ${m.t2} · </span>` : '';
   metaTxt.innerHTML = scoreStr + m.pdt + ' PDT · ' + m.venue;
-
   // Build action buttons
   const isFox = m.ch === 'FOX';
   const chName = m.ch; // FOX or FS1
   const chColor = isFox ? 'btn-fox' : 'btn-fs1';
   const chIcon  = isFox ? '🦊' : '📺';
   const appUrl  = FOX_APP_URL; // both go to Fox Sports app
-
   actionsEl.innerHTML = `
     <a href="${appUrl}" class="sheet-btn ${chColor}" target="_blank" rel="noopener">
       <div class="sheet-btn-icon">${chIcon}</div>
@@ -1748,20 +1621,16 @@ function openSheet(m) {
         <span class="sheet-btn-sub">foxsports.com/live</span>
       </div>
     </a>`;
-
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeSheet() {
   overlay.classList.remove('open');
   document.body.style.overflow = '';
 }
-
 cancelBtn.addEventListener('click', closeSheet);
 overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
-
 // Delegate click on match rows — attach after render
 document.getElementById('main').addEventListener('click', e => {
   const row = e.target.closest('.match');
@@ -1771,8 +1640,6 @@ document.getElementById('main').addEventListener('click', e => {
   const m = FIXTURES.find(f => f.id === id);
   if (m) openSheet(m);
 });
-
-
 // ── STICKY PHASE LABEL PIN DETECTION ─────────────────────────────────────────
 // Adds .is-pinned when a phase label hits the sticky position,
 // switching it to a compact form so it doesn't eat too much screen real estate.
@@ -1780,7 +1647,6 @@ function initStickyPhaseLabels() {
   const CONTROLS_HEIGHT = 98; // header (~49px) + controls bar (~49px)
   const labels = document.querySelectorAll('.phase-label');
   if (!labels.length) return;
-
   const observer = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
@@ -1793,10 +1659,8 @@ function initStickyPhaseLabels() {
       threshold: 1.0
     }
   );
-
   labels.forEach(label => observer.observe(label));
 }
-
 // Re-init after every render since labels are recreated by innerHTML
 const _origRender = render;
 render = function() {
@@ -1811,7 +1675,6 @@ render = function() {
     }
   });
 };
-
 // ── DYNAMIC STICKY OFFSET ─────────────────────────────────────────────────────
 // Measure actual header + controls height so phase labels stick at the right spot
 // regardless of pill wrapping or font scaling on mobile.
@@ -1831,47 +1694,36 @@ function updateStickyOffset() {
 }
 updateStickyOffset();
 window.addEventListener('resize', updateStickyOffset);
-
-
 // ── SCROLL TO TODAY ───────────────────────────────────────────────────────────
 // On load and after render, scroll to the first day that is today or in the future.
 // Skips if the user has already scrolled (only runs on fresh load / filter reset).
 let hasAutoScrolled = false;
-
 function scrollToToday() {
   const todayStr = todayPDT();
   const blocks = Array.from(document.querySelectorAll('.day-block[data-date]'));
   if (!blocks.length) return;
-
   const target = blocks.find(b => b.dataset.date >= todayStr);
   if (!target) return;
-
   // Use offsetTop (absolute doc position) not getBoundingClientRect (viewport-relative)
   // Walk up offsetParent chain to get true document offset
   let absTop = 0;
   let el = target;
   while (el) { absTop += el.offsetTop; el = el.offsetParent; }
-
   const hdr  = document.querySelector('header');
   const ctrl = document.querySelector('.controls');
   const offset = (hdr  ? hdr.getBoundingClientRect().height  : 49)
                + (ctrl ? ctrl.getBoundingClientRect().height : 49)
                + 12;
-
   window.scrollTo({ top: Math.max(0, absTop - offset), behavior: 'smooth' });
 }
-
-
 // ── BRACKET VIEW — absolutely positioned with exact connector alignment ──────
 let bracketOpen = false;
-
 // Layout constants (px)
 const BR_CARD_W    = 200;
 const BR_CARD_H    = 76;
 const BR_COL_GAP   = 64;   // horizontal gap between columns (for connector lines)
 const BR_ROW_GAP   = 52;   // vertical gap between R32 cards (base round) — generous breathing room
 const BR_TITLE_GAP = 40;   // space reserved above column 0 for the round title
-
 function bracketTeamHtml(name, sc, isT1) {
   const isTbd = name === 'TBD';
   const f = isTbd ? '' : flag(name);
@@ -1889,14 +1741,12 @@ function bracketTeamHtml(name, sc, isT1) {
     <span class="bracket-score${scoreHidden}">${scoreVal}</span>
   </div>`;
 }
-
 function bracketMatchHtml(m, x, y) {
   const sc = getScore(m);
   const live = isLiveNow(m);
   let cls = 'bracket-match';
   if (live) cls += ' live';
   if (m.usa) cls += ' usa-match';
-
   let metaHtml;
   if (m.t1 === 'TBD') {
     metaHtml = `<span class="bm-date">TBD</span>`;
@@ -1906,7 +1756,6 @@ function bracketMatchHtml(m, x, y) {
     const pkTag = (sc && sc.wentToPenalties && !sc.isLive) ? ` · <span class="bm-pk">PK</span>` : '';
     metaHtml = `${liveTag}<span class="bm-date">${dateShort}</span> · <span class="bm-time">${m.pdt} PDT</span>${pkTag}`;
   }
-
   return `<div class="${cls}" style="left:${x}px; top:${y}px; width:${BR_CARD_W}px;">
     ${bracketTeamHtml(m.t1, sc, true)}
     <div class="bracket-divider"></div>
@@ -1914,7 +1763,6 @@ function bracketMatchHtml(m, x, y) {
     <div class="bracket-meta">${metaHtml}</div>
   </div>`;
 }
-
 function renderBracket() {
   const rounds = [
     { key: 'r32', title: 'Round of 32' },
@@ -1924,29 +1772,24 @@ function renderBracket() {
   ];
   const finalMatch = FIXTURES.find(m => m.phase === 'final');
   const thirdMatch  = FIXTURES.find(m => m.phase === '3rd');
-
   // Build column data: matches per round, filtering empty rounds
   const cols = rounds
     .map(r => ({ ...r, matches: FIXTURES.filter(m => m.phase === r.key) }))
     .filter(c => c.matches.length > 0);
-
   if (!cols.length) {
     document.getElementById('bracket-view').innerHTML =
       '<div style="text-align:center;color:var(--muted);padding:40px;">No knockout matches yet.</div>';
     return;
   }
-
   // ── STEP 1: compute Y center for every match in every round ────────────────
   // Base round (first column, e.g. R32): evenly spaced top-to-bottom.
   // Each subsequent round: card[i] center = average of center of feeder[2i] and feeder[2i+1].
   const centers = []; // centers[colIndex][matchIndex] = vertical center in px
-
   const baseCount = cols[0].matches.length;
   centers[0] = [];
   for (let i = 0; i < baseCount; i++) {
     centers[0][i] = BR_TITLE_GAP + i * (BR_CARD_H + BR_ROW_GAP) + BR_CARD_H / 2;
   }
-
   for (let c = 1; c < cols.length; c++) {
     const prevCenters = centers[c - 1];
     const count = cols[c].matches.length;
@@ -1957,32 +1800,26 @@ function renderBracket() {
       centers[c][i] = (a !== undefined && b !== undefined) ? (a + b) / 2 : (a ?? b ?? 0);
     }
   }
-
   // Final/3rd-place column center = average of the two SF centers (if SF exists)
   const lastColCenters = centers[cols.length - 1];
   const finalColCenter = lastColCenters.length >= 2
     ? (lastColCenters[0] + lastColCenters[1]) / 2
     : (lastColCenters[0] || 0);
-
   // ── STEP 2: lay out absolute X/Y and build HTML + connectors ───────────────
   const totalHeight = Math.max(
     ...centers[0].map((_, i) => centers[0][i] + BR_CARD_H / 2),
     finalColCenter + BR_CARD_H + 80
   ) + BR_TITLE_GAP + 16;
-
   let html = `<div class="bracket-canvas" style="height:${totalHeight}px;">`;
-
   cols.forEach((col, c) => {
     const x = c * (BR_CARD_W + BR_COL_GAP);
     const firstCardTop = centers[c][0] - BR_CARD_H / 2;
     const titleTop = firstCardTop - 26; // sits just above the first match card
     html += `<div class="bracket-col-title" style="left:${x}px; width:${BR_CARD_W}px; top:${titleTop}px;">${col.title}</div>`;
-
     col.matches.forEach((m, i) => {
       const yCenter = centers[c][i];
       const y = yCenter - BR_CARD_H / 2;
       html += bracketMatchHtml(m, x, y);
-
       // Connector to next round (if it exists): horizontal stub + vertical joiner
       if (c < cols.length - 1) {
         const nextX = x + BR_CARD_W;
@@ -1990,10 +1827,8 @@ function renderBracket() {
         const partnerIdx = i % 2 === 0 ? i + 1 : i - 1;
         const partnerCenter = centers[c][partnerIdx];
         const nextCenter = centers[c + 1][Math.floor(i / 2)];
-
         // Horizontal line from this card to the midpoint
         html += `<div class="bracket-connector h-line" style="left:${nextX}px; top:${yCenter}px; width:${BR_COL_GAP / 2}px;"></div>`;
-
         // Vertical joiner drawn once per pair (only by the even-indexed match)
         if (i % 2 === 0 && partnerCenter !== undefined) {
           const top = Math.min(yCenter, partnerCenter);
@@ -2005,7 +1840,6 @@ function renderBracket() {
       }
     });
   });
-
   // ── Final + 3rd place column ────────────────────────────────────────────────
   const finalX = cols.length * (BR_CARD_W + BR_COL_GAP);
   if (finalMatch) {
@@ -2020,28 +1854,23 @@ function renderBracket() {
     html += `<div class="bracket-trophy" style="left:${finalX + BR_CARD_W/2 - 12}px; top:${thirdY - 34}px;">🥉</div>`;
     html += bracketMatchHtml(thirdMatch, finalX, thirdY);
   }
-
   html += '</div>';
   document.getElementById('bracket-view').innerHTML = html;
 }
-
 function setBracketView(open, opts) {
   opts = opts || {};
   bracketOpen = open;
   const btn = document.getElementById('bracket-btn');
   const view = document.getElementById('bracket-view');
   const mainEl = document.getElementById('main');
-
   // Always reset scroll to top when switching views, so neither view
   // opens already scrolled partway down (or up) from the previous view.
   if (!opts.skipScrollReset) {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
-
   btn.classList.toggle('active', bracketOpen);
   view.classList.toggle('open', bracketOpen);
   mainEl.style.display = bracketOpen ? 'none' : '';
-
   if (bracketOpen) {
     renderBracket();
     // Reset bracket's own horizontal scroll to the start (R32 column)
@@ -2054,11 +1883,9 @@ function setBracketView(open, opts) {
     render();
   }
 }
-
 document.getElementById('bracket-btn').addEventListener('click', () => {
   setBracketView(!bracketOpen);
 });
-
 // ── RESTORE VIEW AFTER RELOAD ─────────────────────────────────────────────────
 // If the FAB reload preserved a "bracket" preference in localStorage, restore
 // that view automatically instead of always landing back on the schedule.
@@ -2072,8 +1899,6 @@ document.getElementById('bracket-btn').addEventListener('click', () => {
     localStorage.removeItem('wc2026_view');
   } catch (e) { /* localStorage unavailable — just stay on default schedule view */ }
 })();
-
-
 </script>
 </body>
 </html>
