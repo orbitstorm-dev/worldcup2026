@@ -968,9 +968,9 @@ const FIXTURES = [
   {id:'qf_1', phase:'qf', date:'2026-07-09', pdt:'1:00 pm',  t1:'France', t2:'Morocco', venue:'Boston',              ch:'FOX'},
   {id:'qf_2', phase:'qf', date:'2026-07-10', pdt:'12:00 pm', t1:'Spain', t2:'Belgium', venue:'Los Angeles',         ch:'FOX'},
   {id:'qf_3', phase:'qf', date:'2026-07-11', pdt:'2:00 pm',  t1:'Norway', t2:'England', venue:'Miami',               ch:'FOX'},
-  {id:'qf_4', phase:'qf', date:'2026-07-11', pdt:'5:00 pm',  t1:'Argentina', t2:'Switzerland', venue:'Kansas City',         ch:'FS1'},
+  {id:'qf_4', phase:'qf', date:'2026-07-11', pdt:'6:00 pm',  t1:'Argentina', t2:'Switzerland', venue:'Kansas City',         ch:'FS1'},
   // SEMIFINALS — Jul 14–15
-  {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Dallas',              ch:'FOX'},
+  {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'France', t2:'TBD', venue:'Dallas',              ch:'FOX'},
   {id:'sf_2', phase:'sf', date:'2026-07-15', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Atlanta',             ch:'FOX'},
   // THIRD PLACE — Jul 18
   {id:'3rd',  phase:'3rd', date:'2026-07-18', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
@@ -1131,6 +1131,8 @@ const KNOWN_RESULTS = [
   { t1:'Argentina',     t2:'Egypt',                   date:'2026-07-07', score1:3, score2:2 },
   // Switzerland 0-0 Colombia after extra time; Switzerland won 4-3 on penalties
   { t1:'Switzerland',   t2:'Colombia',                date:'2026-07-07', score1:0, score2:0, winnerOverride:'Switzerland' },
+  // ── Jul 9 (Quarterfinals begin) ──
+  { t1:'France',        t2:'Morocco',                 date:'2026-07-09', score1:2, score2:0 },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 // SAFETY NET: warn loudly if a live:true match is stale (kickoff was hours ago)
