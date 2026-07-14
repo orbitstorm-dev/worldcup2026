@@ -970,8 +970,8 @@ const FIXTURES = [
   {id:'qf_3', phase:'qf', date:'2026-07-11', pdt:'2:00 pm',  t1:'Norway', t2:'England', venue:'Miami',               ch:'FOX'},
   {id:'qf_4', phase:'qf', date:'2026-07-11', pdt:'6:00 pm',  t1:'Argentina', t2:'Switzerland', venue:'Kansas City',         ch:'FS1'},
   // SEMIFINALS — Jul 14–15
-  {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'France', t2:'TBD', venue:'Dallas',              ch:'FOX'},
-  {id:'sf_2', phase:'sf', date:'2026-07-15', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'Atlanta',             ch:'FOX'},
+  {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'France', t2:'Spain', venue:'Dallas',              ch:'FOX'},
+  {id:'sf_2', phase:'sf', date:'2026-07-15', pdt:'12:00 pm', t1:'England', t2:'Argentina', venue:'Atlanta',             ch:'FOX'},
   // THIRD PLACE — Jul 18
   {id:'3rd',  phase:'3rd', date:'2026-07-18', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
   // FINAL — Jul 19
@@ -1133,6 +1133,15 @@ const KNOWN_RESULTS = [
   { t1:'Switzerland',   t2:'Colombia',                date:'2026-07-07', score1:0, score2:0, winnerOverride:'Switzerland' },
   // ── Jul 9 (Quarterfinals begin) ──
   { t1:'France',        t2:'Morocco',                 date:'2026-07-09', score1:2, score2:0 },
+  // ── Jul 10 (Quarterfinals continue) ──
+  { t1:'Spain',         t2:'Belgium',                 date:'2026-07-10', score1:2, score2:1 },
+  // ── Jul 11 (Quarterfinals conclude) ──
+  // Norway 1-2 England after extra time
+  { t1:'Norway',        t2:'England',                 date:'2026-07-11', score1:1, score2:2 },
+  // Argentina 3-1 Switzerland after extra time
+  { t1:'Argentina',     t2:'Switzerland',             date:'2026-07-11', score1:3, score2:1 },
+  // ── Jul 14 (Semifinals begin) ──
+  { t1:'France',        t2:'Spain',                   date:'2026-07-14', score1:0, score2:2 },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 // SAFETY NET: warn loudly if a live:true match is stale (kickoff was hours ago)
