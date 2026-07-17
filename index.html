@@ -973,9 +973,9 @@ const FIXTURES = [
   {id:'sf_1', phase:'sf', date:'2026-07-14', pdt:'12:00 pm', t1:'France', t2:'Spain', venue:'Dallas',              ch:'FOX'},
   {id:'sf_2', phase:'sf', date:'2026-07-15', pdt:'12:00 pm', t1:'England', t2:'Argentina', venue:'Atlanta',             ch:'FOX'},
   // THIRD PLACE — Jul 18
-  {id:'3rd',  phase:'3rd', date:'2026-07-18', pdt:'2:00 pm',  t1:'TBD', t2:'TBD', venue:'Miami',              ch:'FOX'},
+  {id:'3rd',  phase:'3rd', date:'2026-07-18', pdt:'2:00 pm',  t1:'England', t2:'France', venue:'Miami',              ch:'FOX'},
   // FINAL — Jul 19
-  {id:'final', phase:'final', date:'2026-07-19', pdt:'12:00 pm', t1:'TBD', t2:'TBD', venue:'New York/NJ',     ch:'FOX'},
+  {id:'final', phase:'final', date:'2026-07-19', pdt:'12:00 pm', t1:'Spain', t2:'Argentina', venue:'New York/NJ',     ch:'FOX'},
 ];
 // ─────────────────────────────────────────────
 // STATE
@@ -1142,6 +1142,9 @@ const KNOWN_RESULTS = [
   { t1:'Argentina',     t2:'Switzerland',             date:'2026-07-11', score1:3, score2:1 },
   // ── Jul 14 (Semifinals begin) ──
   { t1:'France',        t2:'Spain',                   date:'2026-07-14', score1:0, score2:2 },
+  // ── Jul 15 (Semifinals conclude) ──
+  // Argentina won 2-1 after two late goals (Enzo Fernandez 85', Lautaro Martinez 92')
+  { t1:'England',       t2:'Argentina',               date:'2026-07-15', score1:1, score2:2 },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 // SAFETY NET: warn loudly if a live:true match is stale (kickoff was hours ago)
